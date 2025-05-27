@@ -34,6 +34,12 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
+import Navigation from "@/components/home/Header";
+import HeroSection from "@/components/home/Hero";
+import PartnersSection from "@/components/home/Partners";
+import BenefitsSection from "@/components/home/BenefitsSection";
+import FeaturesSection from "@/components/home/FeatureSection";
+
 const Home = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
@@ -107,359 +113,27 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-gray-800">Website</div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a
-                href="#"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                About
-              </a>
-              <Button variant="outline" className="mr-2">
-                Login
-              </Button>
-              <Button className="bg-[#4F46E5] hover:bg-[#4338CA]">
-                Sign Up
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Simplify how you manage students, teachers and paperwork with{" "}
-              <span className="text-[#4F46E5]">SmartEdu Hub</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              SmartEdu Hub helps school owners and administrators manage
-              finance, digitize operations, boost efficiency and focus on
-              education.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-[#4F46E5] hover:bg-[#4338CA] px-8 py-3 text-lg">
-                Get Started
-              </Button>
-              <Button variant="outline" className="px-8 py-3 text-lg">
-                See How It Works
-              </Button>
-            </div>
-          </div>
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4 bg-white p-4 rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-[#4F46E5]" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Manage Finances</h3>
-                <p className="text-gray-600">
-                  Track income, control expenses and simplify budgeting
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4 bg-white p-4 rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-[#4F46E5]" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Analytics</h3>
-                <p className="text-gray-600">
-                  Track performance, monitor teachers, students & expenses
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4 bg-white p-4 rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-[#4F46E5]" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Digital Curriculum
-                </h3>
-                <p className="text-gray-600">
-                  Access & deliver structured, up-to-date learning materials
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4 bg-white p-4 rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#4F46E5]" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">AI Assistant</h3>
-                <p className="text-gray-600">24/7 learning support</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Partners Section - Infinite Loop */}
-      <section className="bg-white py-12 overflow-hidden">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-[#4F46E5] font-medium mb-8">
-            Join 1,500+ schools already registered
-          </p>
-          <div
-            id="partners-container"
-            className="flex items-center space-x-12 opacity-60 overflow-hidden"
-            style={{
-              animation: "scroll 20s linear infinite",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {/* Double the partners for seamless loop */}
-            {[...partners, ...partners].map((partner, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-2 text-gray-700 font-bold flex-shrink-0"
-              >
-                <span className="text-2xl">{partner.icon}</span>
-                <span>{partner.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <style jsx>{`
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-        `}</style>
-      </section>
+      <PartnersSection partners={partners} />
 
       {/* Features Section - Left Aligned */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Everything you need to manage education effectively
-            </h2>
-            <p className="text-xl text-gray-600">
-              A comprehensive suite of tools designed for teachers, students,
-              and administrators.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="text-left">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <BookOpen className="w-8 h-8 text-[#4F46E5]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Curriculum Manager
-              </h3>
-              <p className="text-gray-600">
-                Create and organize subjects, topics, and learning materials in
-                a structured digital format.
-              </p>
-            </div>
-
-            <div className="text-left">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <BarChart3 className="w-8 h-8 text-[#4F46E5]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Performance Analytics
-              </h3>
-              <p className="text-gray-600">
-                Track student progress, analyze results, and generate
-                comprehensive reports.
-              </p>
-            </div>
-
-            <div className="text-left">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Users className="w-8 h-8 text-[#4F46E5]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                AI Learning Assistant
-              </h3>
-              <p className="text-gray-600">
-                Get instant help with homework and personalized learning
-                recommendations.
-              </p>
-            </div>
-
-            <div className="text-left">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <MessageSquare className="w-8 h-8 text-[#4F46E5]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Communication Hub
-              </h3>
-              <p className="text-gray-600">
-                Enable seamless interaction between teachers, students, and
-                administrators.
-              </p>
-            </div>
-
-            <div className="text-left">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <User className="w-8 h-8 text-[#4F46E5]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Student Portal
-              </h3>
-              <p className="text-gray-600">
-                Access learning materials, submit assignments, and track
-                progress in one place.
-              </p>
-            </div>
-
-            <div className="text-left">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <FileText className="w-8 h-8 text-[#4F46E5]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Admin Dashboard
-              </h3>
-              <p className="text-gray-600">
-                Manage users, monitor school performance, and handle
-                administrative tasks efficiently.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* <FeatureCard />
+       */}
+      <FeaturesSection />
 
       {/* Benefits Section - Blue Icons and Dots */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
-            Benefits for Everyone
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <BookOpen className="w-6 h-6 text-[#4F46E5]" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  For Teachers
-                </h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Create and manage digital curriculum
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Track student performance
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Automated grading assistance
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Easy communication tools
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Detailed analytics and reports
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <User className="w-6 h-6 text-[#4F46E5]" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  For Students
-                </h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Structured learning materials
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    24/7 AI homework assistance
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Progress tracking
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Interactive assignments
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Personalized feedback
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <FileText className="w-6 h-6 text-[#4F46E5]" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  For Administrators
-                </h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Centralized school management
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Performance monitoring
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Resource allocation
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Data-driven insights
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-[#4F46E5] rounded-full mr-3"></span>
-                    Streamlined operations
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+      <BenefitsSection />
 
       {/* Testimonials Section - Proper Carousel */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-brand-heading mb-4">
               What school leaders are saying
             </h2>
             <p className="text-xl text-gray-600">
@@ -472,7 +146,7 @@ const Home = () => {
             <CarouselContent>
               {testimonials.map((testimonial, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="p-6 h-full transition-all duration-300 hover:bg-[#4F46E5] hover:text-white group">
+                  <Card className="p-6 h-full transition-all duration-300 hover:bg-brand-primary hover:text-white group">
                     <CardContent className="p-0">
                       <div className="flex items-center mb-4">
                         <div className="w-12 h-12 bg-gray-300 rounded-full mr-3"></div>
@@ -507,7 +181,7 @@ const Home = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-brand-heading mb-4">
               Frequently asked questions
             </h2>
             <p className="text-xl text-gray-600">
@@ -521,19 +195,19 @@ const Home = () => {
               <TabsList className="grid w-full grid-cols-3 mb-8">
                 <TabsTrigger
                   value="owners"
-                  className="px-6 py-3 data-[state=active]:bg-[#4F46E5] data-[state=active]:text-white"
+                  className="px-6 py-3 data-[state=active]:bg-brand-primary data-[state=active]:text-white"
                 >
                   School Owners & Administrators
                 </TabsTrigger>
                 <TabsTrigger
                   value="teachers"
-                  className="px-6 py-3 data-[state=active]:bg-[#4F46E5] data-[state=active]:text-white"
+                  className="px-6 py-3 data-[state=active]:bg-brand-primary data-[state=active]:text-white"
                 >
                   Teachers & Educators
                 </TabsTrigger>
                 <TabsTrigger
                   value="parents"
-                  className="px-6 py-3 data-[state=active]:bg-[#4F46E5] data-[state=active]:text-white"
+                  className="px-6 py-3 data-[state=active]:bg-brand-primary data-[state=active]:text-white"
                 >
                   Parents & Students
                 </TabsTrigger>
@@ -683,7 +357,7 @@ const Home = () => {
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400"
               />
-              <Button className="bg-[#4F46E5] hover:bg-[#4338CA] px-6 py-3 h-auto">
+              <Button className="bg-brand-primary hover:bg-[#4338CA] px-6 py-3 h-auto">
                 Subscribe
               </Button>
             </div>
