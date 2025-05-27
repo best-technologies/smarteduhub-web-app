@@ -11,26 +11,26 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             <a
               href="#"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-brand-primary transition-colors"
             >
               Features
             </a>
             <a
               href="#"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-brand-primary transition-colors"
             >
               Pricing
             </a>
             <a
               href="#"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-brand-primary transition-colors"
             >
               About
             </a>
             <Button variant="outline" className="mr-2">
               Login
             </Button>
-            <Button className="bg-brand-primary hover:bg-[#4338CA]">
+            <Button className="bg-brand-primary hover:bg-brand-primary-hover text-white">
               Sign Up
             </Button>
           </div>

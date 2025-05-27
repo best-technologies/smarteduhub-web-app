@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Upload, FileText, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import SuccessModal from "@/components/home/SuccessModal";
 
 interface UploadedFile {
   name: string;
@@ -13,6 +14,8 @@ interface UploadedFile {
 
 const ConfirmCreate = () => {
   const router = useRouter();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const [uploadedFiles, setUploadedFiles] = useState<{
     cac: UploadedFile | null;
     utility: UploadedFile | null;
@@ -87,10 +90,15 @@ const ConfirmCreate = () => {
       // Clear stored data
       localStorage.removeItem("schoolFormData");
 
-      // You can navigate to a success page or dashboard here
-      alert("Application submitted successfully!");
-      // Example: router.push("/success");
+      // Show success modal instead of alert
+      setShowSuccessModal(true);
     }
+  };
+
+  const handleModalClose = () => {
+    setShowSuccessModal(false);
+    // Redirect to home page after closing the modal
+    router.push("/");
   };
 
   const FileUploadArea = ({
@@ -253,6 +261,9 @@ const ConfirmCreate = () => {
           </Button>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <SuccessModal open={showSuccessModal} onClose={handleModalClose} />
     </div>
   );
 };
