@@ -17,7 +17,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Star } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import Navigation from "@/components/home/Header";
 import HeroSection from "@/components/home/Hero";
