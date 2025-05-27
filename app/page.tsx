@@ -16,22 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  BarChart3,
-  BookOpen,
-  Users,
-  MessageSquare,
-  User,
-  FileText,
-  ChevronDown,
-  CreditCard,
-  Smartphone,
-  Globe,
-  Zap,
-  Shield,
-  Star,
-  Award,
-} from "lucide-react";
+import { Star, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import Navigation from "@/components/home/Header";
