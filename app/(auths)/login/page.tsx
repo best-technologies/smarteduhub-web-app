@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import ConeBar from "@/components/ui/conebar";
 
 const Login = () => {
   const router = useRouter();
@@ -33,12 +35,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-sm p-8">
+      <div className="max-w-lg w-full bg-white rounded-lg shadow-sm p-8 mt-8 lg:mt-0">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-xl font-bold text-brand-primary mb-6">
-            SmartEdu-Hub
-          </h1>
+          {/* Logo and Title */}
+          <div className="w-full flex items-center justify-center gap-x-4 md:gap-x-20 mb-6">
+            <ConeBar className="w-8 md:w-14 h-2 text-brand-primary rotate-180" />
+            <h1 className="text-base md:text-xl font-bold text-brand-primary text-nowrap">
+              SmartEdu-Hub
+            </h1>
+            <ConeBar className="w-8 md:w-14 h-2 text-brand-primary" />
+          </div>
 
           <h2 className="text-xl font-medium text-brand-heading mb-2">
             Welcome back!
@@ -89,7 +96,7 @@ const Login = () => {
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 focus:outline-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-light-accent-1 hover:text-brand-border-secondary hover:cursor-pointer focus:outline-none"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -101,7 +108,7 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-col md:flex-row">
             <div className="flex items-center">
               <input
                 id="remember-me"
@@ -117,7 +124,7 @@ const Login = () => {
               </label>
             </div>
 
-            <div className="text-sm">
+            <div className="text-sm mt-6 md:mt-0">
               <Link
                 href="/forgot-password"
                 aria-label="Forgot password"
@@ -143,15 +150,15 @@ const Login = () => {
 
         {/* Footer */}
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-brand-light-accent-1">
             Don&apos;t have an account?{" "}
-            <button
-              type="button"
-              onClick={() => router.push("/create-account")}
-              className="font-medium text-brand-primary hover:text-[#4338CA]"
+            <Link
+              href="/create-account"
+              className="font-medium text-brand-primary hover:text-brand-primary-hover hover:underline"
+              aria-label="Sign up"
             >
               Sign up
-            </button>
+            </Link>
           </p>
         </div>
       </div>
