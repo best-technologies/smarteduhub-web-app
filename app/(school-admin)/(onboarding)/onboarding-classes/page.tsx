@@ -48,7 +48,7 @@ const OnboardClasses = () => {
 
   const handleNext = () => {
     updateClasses(classes);
-    router.push("/teachers");
+    router.push("/onboarding-teachers");
   };
 
   const availableLevels = classLevels.filter(
