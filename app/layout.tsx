@@ -55,7 +55,6 @@ export const metadata = {
     creator: "@Best Technologies Ltd.",
     images: ["https://besttechnologiesltd.com/og-image.png"],
   },
-  viewport: "width=device-width, initial-scale=1",
   robots: {
     index: true,
     follow: true,
