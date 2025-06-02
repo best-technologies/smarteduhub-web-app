@@ -60,7 +60,7 @@ const OnboardClasses = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-brand-primary mb-8">
+          <h1 className="text-2xl font-semibold text-brand-primary my-8">
             SmartEdu-Hub
           </h1>
         </div>

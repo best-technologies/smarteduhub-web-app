@@ -16,6 +16,11 @@ type TeacherFormData = {
   phoneNumber: string;
 };
 
+function isValidEmail(email: string) {
+  // Simple email regex for validation
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export default function OnboardTeachers() {
   const router = useRouter();
   const { data, addTeacher, removeTeacher } = useOnboarding();
@@ -28,11 +33,18 @@ export default function OnboardTeachers() {
   });
 
   const handleInputChange = (field: keyof TeacherFormData, value: string) => {
+    if (field === "phoneNumber") {
+      // Limit phone number to 11 characters
+      value = value.replace(/\D/g, "").slice(0, 11);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const isFormValid = () => {
-    return Object.values(formData).every((value) => value.trim() !== "");
+    return (
+      Object.values(formData).every((value) => value.trim() !== "") &&
+      isValidEmail(formData.email)
+    );
   };
 
   const handleAddTeacher = () => {
@@ -62,11 +74,11 @@ export default function OnboardTeachers() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-white p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-brand-primary mb-8">
+          <h1 className="text-2xl font-semibold text-brand-primary my-8">
             SmartEdu-Hub
           </h1>
         </div>
@@ -74,7 +86,9 @@ export default function OnboardTeachers() {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600">Step 2 of 5</span>
+            <span className="text-sm text-brand-light-accent-2 font-medium">
+              Step 2 of 5
+            </span>
             <span className="text-sm text-brand-primary font-medium">
               45% Complete
             </span>
@@ -83,14 +97,17 @@ export default function OnboardTeachers() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-lg border-2 border-brand-border p-8">
+        <div className="bg-brand-bg rounded-md border-2 border-brand-border p-8">
           <div className="text-center mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-brand-heading mb-2">
               Step 2 of 5: Add Teachers
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-brand-light-accent-2 text-sm">
               Add teachers so they can manage their class schedules, attendance,
               etc.
+            </p>
+            <p className="text-brand-light-accent-2 text-sm">
+              (You can always add more teachers later after this setup)
             </p>
           </div>
 
@@ -99,13 +116,13 @@ export default function OnboardTeachers() {
             <div>
               <Label
                 htmlFor="firstName"
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-brand-heading"
               >
                 First Name
               </Label>
               <Input
                 id="firstName"
-                placeholder="John"
+                placeholder="E.g. John"
                 value={formData.firstName}
                 onChange={(e) => handleInputChange("firstName", e.target.value)}
                 className="mt-1"
@@ -114,13 +131,13 @@ export default function OnboardTeachers() {
             <div>
               <Label
                 htmlFor="lastName"
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-brand-heading"
               >
                 Last Name
               </Label>
               <Input
                 id="lastName"
-                placeholder="Doe"
+                placeholder="E.g. Adamu"
                 value={formData.lastName}
                 onChange={(e) => handleInputChange("lastName", e.target.value)}
                 className="mt-1"
@@ -129,34 +146,41 @@ export default function OnboardTeachers() {
             <div>
               <Label
                 htmlFor="email"
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-brand-heading"
               >
                 Email
               </Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="johndoe@gmail.com"
+                placeholder="E.g. john@schoolname.com"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 className="mt-1"
               />
+              {!isValidEmail(formData.email) && formData.email && (
+                <span className="text-xs text-red-500">
+                  Please enter a valid email address.
+                </span>
+              )}
             </div>
             <div>
               <Label
                 htmlFor="phoneNumber"
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-brand-heading"
               >
                 Phone Number
               </Label>
               <Input
                 id="phoneNumber"
-                placeholder="+1234567890"
+                placeholder="E.g. 09012345678"
                 value={formData.phoneNumber}
                 onChange={(e) =>
                   handleInputChange("phoneNumber", e.target.value)
                 }
                 className="mt-1"
+                maxLength={11}
+                inputMode="numeric"
               />
             </div>
           </div>
@@ -181,17 +205,17 @@ export default function OnboardTeachers() {
               <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-4">
                 <User className="w-6 h-6 text-gray-400" />
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-brand-light-accent-2 text-sm">
                 No teachers added yet. Add your first teacher to get started
               </p>
             </div>
           ) : (
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-gray-700">
+                <h3 className="text-sm font-medium text-brand-heading">
                   Teachers Added
                 </h3>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-brand-light-accent-2">
                   {data.teachers.length} teacher
                   {data.teachers.length !== 1 ? "s" : ""}
                 </span>
@@ -200,17 +224,17 @@ export default function OnboardTeachers() {
                 {data.teachers.map((teacher) => (
                   <div
                     key={teacher.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-4 bg-white rounded-lg border border-brand-border"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-gray-600" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-brand-heading">
                           {teacher.firstName} {teacher.lastName}
                         </p>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-4 text-sm text-brand-light-accent-2">
                           <span className="flex items-center gap-1">
                             <Mail className="w-3 h-3" />
                             {teacher.email}
@@ -235,13 +259,14 @@ export default function OnboardTeachers() {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between">
+          <div className="flex justify-between border-t border-gray-200 pt-4 mt-8">
             <Button onClick={handleBack} variant="outline" className="px-8">
               Back
             </Button>
             <Button
               onClick={handleNext}
               className="bg-brand-primary hover:bg-brand-primary/90 text-white px-8"
+              disabled={data.teachers.length === 0}
             >
               Next
             </Button>
