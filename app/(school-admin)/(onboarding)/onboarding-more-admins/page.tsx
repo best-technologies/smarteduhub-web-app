@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useOnboarding } from "@/contexts/OnboardingContext";
-import { User, Mail, Trash2, Eye, EyeOff } from "lucide-react";
+import { ShieldUser, Mail, Trash2, Eye, EyeOff } from "lucide-react";
 
 const OnboardMoreAdmins = () => {
   const router = useRouter();
@@ -48,11 +48,11 @@ const OnboardMoreAdmins = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-white p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-brand-primary mb-8">
+          <h1 className="text-2xl font-semibold text-brand-primary my-8">
             SmartEdu-Hub
           </h1>
         </div>
@@ -60,7 +60,9 @@ const OnboardMoreAdmins = () => {
         {/* Progress */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600">Step 4 of 5</span>
+            <span className="text-sm text-brand-light-accent-2 font-medium">
+              Step 4 of 5
+            </span>
             <span className="text-sm text-brand-primary font-medium">
               80% Complete
             </span>
@@ -69,12 +71,12 @@ const OnboardMoreAdmins = () => {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-lg border-2 border-brand-border p-8">
+        <div className="bg-brand-bg rounded-md border-2 border-brand-border p-8">
           <div className="text-center mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-brand-heading mb-2">
               Step 4 of 5: Add More Admins
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-brand-light-accent-2 text-sm">
               Assign people who will manage operations & handle day-to-day
               tasks.
             </p>
@@ -83,36 +85,59 @@ const OnboardMoreAdmins = () => {
           {/* Form */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
-              <Label htmlFor="firstName">First Name</Label>
+              <Label
+                htmlFor="firstName"
+                className="text-sm font-medium text-brand-heading"
+              >
+                First Name
+              </Label>
               <Input
                 id="firstName"
                 placeholder="John"
                 value={formData.firstName}
                 onChange={(e) => handleInputChange("firstName", e.target.value)}
+                className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label
+                htmlFor="lastName"
+                className="text-sm font-medium text-brand-heading"
+              >
+                Last Name
+              </Label>
               <Input
                 id="lastName"
                 placeholder="Doe"
                 value={formData.lastName}
                 onChange={(e) => handleInputChange("lastName", e.target.value)}
+                className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-brand-heading"
+              >
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="johndoe@example.com"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
+                className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-brand-heading"
+              >
+                Password
+              </Label>
+              <div className="relative mt-1">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -121,12 +146,12 @@ const OnboardMoreAdmins = () => {
                   onChange={(e) =>
                     handleInputChange("password", e.target.value)
                   }
-                  className="pr-10"
+                  className="w-full pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4 text-gray-400" />
@@ -144,7 +169,7 @@ const OnboardMoreAdmins = () => {
               disabled={!isFormValid()}
               className={`px-6 ${
                 isFormValid()
-                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  ? "bg-brand-primary hover:bg-brand-primary/90 text-white"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >
@@ -156,9 +181,9 @@ const OnboardMoreAdmins = () => {
           {data.admins.length === 0 ? (
             <div className="text-center py-12">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-4">
-                <User className="w-6 h-6 text-gray-400" />
+                <ShieldUser className="w-6 h-6 text-gray-400" />
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-brand-light-accent-2 text-sm">
                 No admins added yet. You can add more admins to help manage the
                 school.
               </p>
@@ -166,10 +191,10 @@ const OnboardMoreAdmins = () => {
           ) : (
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-gray-700">
+                <h3 className="text-sm font-medium text-brand-heading">
                   Admins Added
                 </h3>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-brand-light-accent-2">
                   {data.admins.length} admin
                   {data.admins.length !== 1 ? "s" : ""}
                 </span>
@@ -178,17 +203,17 @@ const OnboardMoreAdmins = () => {
                 {data.admins.map((admin) => (
                   <div
                     key={admin.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-4 bg-white rounded-lg border border-brand-border"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-brand-primary rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-white" />
+                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                        <ShieldUser className="w-4 h-4 text-brand-primary" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-brand-heading">
                           {admin.firstName} {admin.lastName}
                         </p>
-                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                        <div className="flex items-center gap-1 text-sm text-brand-light-accent-2">
                           <Mail className="w-3 h-3" />
                           {admin.email}
                         </div>
@@ -207,13 +232,14 @@ const OnboardMoreAdmins = () => {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between">
+          <div className="flex justify-between border-t border-gray-200 pt-4 mt-8">
             <Button onClick={handleBack} variant="outline" className="px-8">
               Back
             </Button>
             <Button
               onClick={handleNext}
               className="bg-brand-primary hover:bg-brand-primary/90 text-white px-8"
+              disabled={data.admins.length === 0}
             >
               Next
             </Button>
