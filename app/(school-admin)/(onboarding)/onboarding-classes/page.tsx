@@ -83,7 +83,7 @@ const OnboardClasses = () => {
               Step 1 of 5: Add Your Classes
             </h2>
             <p className="text-gray-600 text-sm">
-              Define your school's class structure so it can be used when
+              Define your school&apos;s class structure so it can be used when
               assigning
               <br />
               (Typically from Primary 1 to SS3, but you can add any level
