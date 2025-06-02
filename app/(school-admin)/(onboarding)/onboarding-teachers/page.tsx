@@ -228,7 +228,7 @@ export default function OnboardTeachers() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-gray-600" />
+                        <User className="w-4 h-4 text-brand-primary" />
                       </div>
                       <div>
                         <p className="font-medium text-brand-heading">
