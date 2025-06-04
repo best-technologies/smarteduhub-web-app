@@ -5,7 +5,7 @@ import {
   Users,
   Calendar,
   Book,
-  DollarSign,
+  HandCoins,
   Settings,
   MessageCircle,
   UserCog,
@@ -21,7 +21,7 @@ const adminTabs = [
   { href: "/admin/dashboard", label: "Dashboard", icon: Home },
   { href: "/admin/teachers", label: "Teachers", icon: UserCog },
   { href: "/admin/students", label: "Students", icon: Users },
-  { href: "/admin/finance", label: "Finance", icon: DollarSign },
+  { href: "/admin/finance", label: "Finance", icon: HandCoins },
   { href: "/admin/subjects", label: "Subjects", icon: Book },
   { href: "/admin/schedules", label: "Schedules", icon: Calendar },
   { href: "/admin/messages", label: "Messages", icon: MessageCircle },
@@ -46,7 +46,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-brand-bg flex flex-col">
       {/* Desktop Sidebar */}
       <div className="hidden sm:flex fixed left-0 top-0 h-full w-64 bg-white border-r border-brand-border shadow-sm z-20">
         <div className="w-full">
