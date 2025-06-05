@@ -252,11 +252,11 @@ const AdminStudents = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  // const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [selectedClass, setSelectedClass] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedPerformance, setSelectedPerformance] = useState<string>("all");
-  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  // const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [quickFilter, setQuickFilter] = useState("");
