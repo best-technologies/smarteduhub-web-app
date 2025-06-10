@@ -50,7 +50,7 @@ export default function StudentShell({ children }: { children: ReactNode }) {
                 SmartEdu Hub
               </h1>
             </Link>
-            <p className="text-sm text-gray-500">Student's Portal</p>
+            <p className="text-sm text-gray-500">Student&apos;s Portal</p>
           </div>
           <nav className="p-4 flex flex-col gap-1">
             {studentTabs.map(({ href, label, icon: Icon }) => (

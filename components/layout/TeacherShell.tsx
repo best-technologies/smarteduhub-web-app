@@ -43,7 +43,7 @@ export default function TeacherShell({ children }: { children: ReactNode }) {
                 SmartEdu Hub
               </h1>
             </Link>
-            <p className="text-sm text-gray-500">Teacher's Portal</p>
+            <p className="text-sm text-gray-500">Teacher&apos;s Portal</p>
           </div>
           <nav className="p-4 flex flex-col gap-1">
             {teacherTabs.map(({ href, label, icon: Icon }) => (

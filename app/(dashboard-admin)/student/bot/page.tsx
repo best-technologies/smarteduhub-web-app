@@ -30,8 +30,8 @@ const StudentAIChatPage = () => {
                 <div className="flex-grow">
                   <div className="bg-muted p-3 rounded-lg inline-block">
                     <p className="text-sm">
-                      Hello! I'm your AI study assistant. How can I help you
-                      today?
+                      Hello! I&apos;m your AI study assistant. How can I help
+                      you today?
                     </p>
                   </div>
                 </div>

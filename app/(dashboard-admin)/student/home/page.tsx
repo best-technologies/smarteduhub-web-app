@@ -5,18 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
-  ChartLegend,
+  // ChartLegend,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
   PieChart,
   Pie,
   Cell,
-  AreaChart,
-  Area,
+  // AreaChart,
+  // Area,
   BarChart,
   Bar,
   XAxis,
@@ -29,7 +29,7 @@ import {
   CalendarDays,
   BookOpen,
   Clock,
-  BarChart2,
+  // BarChart2,
   Award,
   FileText,
 } from "lucide-react";
@@ -75,13 +75,13 @@ const upcomingAssignments = [
   },
 ];
 
-const progressData = [
-  { month: "Jan", performance: 65 },
-  { month: "Feb", performance: 72 },
-  { month: "Mar", performance: 78 },
-  { month: "Apr", performance: 85 },
-  { month: "May", performance: 88 },
-];
+// const progressData = [
+//   { month: "Jan", performance: 65 },
+//   { month: "Feb", performance: 72 },
+//   { month: "Mar", performance: 78 },
+//   { month: "Apr", performance: 85 },
+//   { month: "May", performance: 88 },
+// ];
 
 const COLORS = ["#1E88E5", "#E53935", "#FFA000"];
 
