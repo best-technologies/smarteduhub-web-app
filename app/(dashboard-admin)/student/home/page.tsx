@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
@@ -147,7 +153,7 @@ const StudentHomePage: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Subject Performance */}
-        <Card>
+        <Card className="bg-white shadow-md">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <BookOpen className="h-5 w-5 mr-2 text-brand-primary" />
@@ -195,6 +201,7 @@ const StudentHomePage: React.FC = () => {
                             active={active}
                             payload={payload}
                             label={label}
+                            className="bg-brand-bg border-0"
                           />
                         );
                       }}
@@ -202,19 +209,24 @@ const StudentHomePage: React.FC = () => {
                     <Legend />
                     <Bar
                       dataKey="average"
-                      fill="#E0E0E0"
+                      fill="#e2e8f0cc"
                       radius={[0, 0, 0, 0]}
                     />
-                    <Bar dataKey="score" fill="#1E88E5" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="score" fill="#4f46e5" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
             </div>
           </CardContent>
+          <CardFooter className="mt-10">
+            <Button className="w-full bg-brand-primary hover:bg-brand-primary/90">
+              View All Performance
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Upcoming Assignments */}
-        <Card>
+        <Card className="bg-white shadow-md">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Clock className="h-5 w-5 mr-2 text-amber-400" />
@@ -277,7 +289,7 @@ const StudentHomePage: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Attendance Chart */}
-        <Card className="md:col-span-1">
+        <Card className="md:col-span-1 bg-white shadow-md">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <CalendarDays className="h-5 w-5 mr-2 text-brand-primary" />
