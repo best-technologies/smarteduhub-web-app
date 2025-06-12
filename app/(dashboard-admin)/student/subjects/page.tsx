@@ -2,41 +2,78 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Book, FileText, Users } from "lucide-react";
+import { Book, FileText, Users, BrainCog } from "lucide-react";
 import StudentHeader from "@/components/ui/student-header";
 
 const subjects = [
   {
     id: 1,
     name: "Mathematics",
-    teacher: "Dr. Smith",
+    teacher: "Mr. Adewale",
     progress: 75,
     nextClass: "Tomorrow, 10:00 AM",
-    topics: ["Calculus", "Integration", "Differentiation"],
   },
   {
     id: 2,
-    name: "Physics",
-    teacher: "Prof. Johnson",
+    name: "English Language",
+    teacher: "Mrs. Okafor",
     progress: 82,
     nextClass: "Wednesday, 2:00 PM",
-    topics: ["Wave Motion", "Optics", "Mechanics"],
   },
   {
     id: 3,
-    name: "Chemistry",
-    teacher: "Dr. Williams",
+    name: "Civic Education",
+    teacher: "Mr. Chukwu",
     progress: 90,
     nextClass: "Thursday, 11:30 AM",
-    topics: ["Organic Chemistry", "Chemical Bonding", "Reactions"],
+  },
+  {
+    id: 4,
+    name: "Physics",
+    teacher: "Mrs. Balogun",
+    progress: 68,
+    nextClass: "Friday, 9:00 AM",
+  },
+  {
+    id: 5,
+    name: "Biology",
+    teacher: "Mr. Eze",
+    progress: 77,
+    nextClass: "Monday, 8:30 AM",
+  },
+  {
+    id: 6,
+    name: "Chemistry",
+    teacher: "Mrs. Ogunleye",
+    progress: 54,
+    nextClass: "Tuesday, 1:00 PM",
+  },
+  {
+    id: 7,
+    name: "Further Mathematics",
+    teacher: "Mr. Musa",
+    progress: 80,
+    nextClass: "Thursday, 12:00 PM",
+  },
+  {
+    id: 8,
+    name: "Geography",
+    teacher: "Mrs. Danjuma",
+    progress: 62,
+    nextClass: "Wednesday, 10:30 AM",
+  },
+  {
+    id: 9,
+    name: "Computer Science",
+    teacher: "Mr. Adebayo",
+    progress: 71,
+    nextClass: "Friday, 2:30 PM",
   },
 ];
 
 const StudentSubjectsPage = () => {
   return (
     <div className="p-6">
-      {/* <h1 className="text-2xl font-bold mb-6">My Subjects</h1> */}
-
       {/* Header */}
       <StudentHeader
         studentName="Oluwajuwon Kayode"
@@ -50,7 +87,7 @@ const StudentSubjectsPage = () => {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>{subject.name}</span>
-                <Book className="h-5 w-5" />
+                <BrainCog className="h-5 w-5" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -73,14 +110,14 @@ const StudentSubjectsPage = () => {
                   <p className="text-muted-foreground">{subject.nextClass}</p>
                 </div>
 
-                <div className="text-sm">
+                {/* <div className="text-sm">
                   <p className="font-medium mb-2">Current Topics:</p>
                   <ul className="list-disc list-inside text-muted-foreground">
                     {subject.topics.map((topic, index) => (
                       <li key={index}>{topic}</li>
                     ))}
                   </ul>
-                </div>
+                </div> */}
 
                 <div className="flex space-x-2 pt-2">
                   <Button variant="outline" className="w-full">
