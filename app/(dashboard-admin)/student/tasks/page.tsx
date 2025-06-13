@@ -4,39 +4,40 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, FileText } from "lucide-react";
 import StudentHeader from "@/components/ui/student-header";
+import ClassScheduleTable from "@/components/student/tasks/ClassScheduleTable";
 
-const tasks = [
-  {
-    id: 1,
-    title: "Mathematics Quiz",
-    subject: "Mathematics",
-    type: "Quiz",
-    dueDate: "2024-05-01",
-    timeLeft: "2 days",
-    status: "pending",
-    description: "Chapter 5: Integration and its applications",
-  },
-  {
-    id: 2,
-    title: "Physics Lab Report",
-    subject: "Physics",
-    type: "Assignment",
-    dueDate: "2024-05-03",
-    timeLeft: "4 days",
-    status: "in-progress",
-    description: "Wave Motion Experiment Analysis",
-  },
-  {
-    id: 3,
-    title: "Chemistry Assignment",
-    subject: "Chemistry",
-    type: "Assignment",
-    dueDate: "2024-05-07",
-    timeLeft: "1 week",
-    status: "not-started",
-    description: "Organic Chemistry Reactions",
-  },
-];
+// const tasks = [
+//   {
+//     id: 1,
+//     title: "Mathematics Quiz",
+//     subject: "Mathematics",
+//     type: "Quiz",
+//     dueDate: "2024-05-01",
+//     timeLeft: "2 days",
+//     status: "pending",
+//     description: "Chapter 5: Integration and its applications",
+//   },
+//   {
+//     id: 2,
+//     title: "Physics Lab Report",
+//     subject: "Physics",
+//     type: "Assignment",
+//     dueDate: "2024-05-03",
+//     timeLeft: "4 days",
+//     status: "in-progress",
+//     description: "Wave Motion Experiment Analysis",
+//   },
+//   {
+//     id: 3,
+//     title: "Chemistry Assignment",
+//     subject: "Chemistry",
+//     type: "Assignment",
+//     dueDate: "2024-05-07",
+//     timeLeft: "1 week",
+//     status: "not-started",
+//     description: "Organic Chemistry Reactions",
+//   },
+// ];
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -68,7 +69,7 @@ const StudentTasksPage = () => {
         // avatarUrl="https://via.placeholder.com/150"
       />
 
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         {tasks.map((task) => (
           <Card key={task.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -113,7 +114,12 @@ const StudentTasksPage = () => {
             </CardContent>
           </Card>
         ))}
-      </div>
+      </div> */}
+
+      <ClassScheduleTable />
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <ClassScheduleTable />
+      </div> */}
     </div>
   );
 };
