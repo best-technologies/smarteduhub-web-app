@@ -112,12 +112,12 @@ export default function ClassScheduleTable() {
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold flex items-center gap-2 text-brand-heading">
           <Clock className="h-4 w-4" />
-          Weekly Schedule
+          My Weekly Time Table
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={activeDay} onValueChange={setActiveDay} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-4">
+          <TabsList className="grid w-full grid-cols-5 mb-4 bg-brand-border">
             {weekdays.map((day) => (
               <TabsTrigger key={day} value={day} className="text-sm">
                 {day.slice(0, 3)}
@@ -130,7 +130,7 @@ export default function ClassScheduleTable() {
               <div className="rounded-lg border border-brand-border overflow-hidden">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-muted/50">
+                    <TableRow className="bg-brand-border">
                       <TableHead className="font-semibold">Course</TableHead>
                       <TableHead className="font-semibold">Time</TableHead>
                       <TableHead className="font-semibold">Location</TableHead>
@@ -144,14 +144,14 @@ export default function ClassScheduleTable() {
                       getFilteredSchedule(day).map((item) => (
                         <TableRow
                           key={item.id}
-                          className={`transition-colors hover:bg-muted/30 ${
+                          className={`transition-colors hover:bg-white ${
                             item.isToday
                               ? "bg-blue-50/50 border-l-4 border-l-brand-primary"
                               : ""
                           }`}
                         >
                           <TableCell className="space-y-1">
-                            <div className="font-medium text-foreground">
+                            <div className="font-medium text-brand-light-accent-1">
                               {item.course}
                             </div>
                             <div className="flex items-center gap-2">
