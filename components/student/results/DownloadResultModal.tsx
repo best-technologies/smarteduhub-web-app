@@ -50,7 +50,8 @@ export function DownloadResultModal({
 
         <div className="py-4">
           <p className="text-muted-foreground">
-            You're about to download the full result for {term.toLowerCase()}.
+            You&apos;re about to download the full result for{" "}
+            {term.toLowerCase()}.
           </p>
         </div>
 
