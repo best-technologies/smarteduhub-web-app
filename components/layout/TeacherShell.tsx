@@ -17,12 +17,11 @@ import { ReactNode } from "react";
 import Link from "next/link";
 
 const teacherTabs = [
-  { href: "/teacher/dashboard", label: "Home", icon: Home },
+  { href: "/teacher/dashboard", label: "Dashboard", icon: Home },
   { href: "/teacher/students", label: "Students", icon: Users },
   { href: "/teacher/schedules", label: "Schedules", icon: Calendar },
   { href: "/teacher/subjects", label: "Subjects", icon: Book },
   { href: "/teacher/grading", label: "Grading", icon: FileText },
-  { href: "/teacher/profile", label: "Profile", icon: User },
 ];
 
 const bottomTabs = [
@@ -50,9 +49,9 @@ export default function TeacherShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Desktop Sidebar */}
-      <div className="hidden sm:flex fixed left-0 top-0 h-full w-64 bg-white border-r shadow-sm z-20">
+      <div className="hidden sm:flex fixed left-0 top-0 h-full w-64 bg-white border-r border-r-brand-border shadow-sm z-20">
         <div className="w-full flex flex-col h-full">
-          <div className="p-4 border-b">
+          <div className="p-4 border-b border-b-brand-border">
             <Link href="/">
               <h1 className="font-bold text-lg text-brand-primary hover:text-brand-primary/90">
                 SmartEdu Hub
@@ -66,7 +65,7 @@ export default function TeacherShell({ children }: { children: ReactNode }) {
                 key={href}
                 onClick={() => handleTabClick(href, label)}
                 className={cn(
-                  "flex items-center w-full p-2 rounded-md transition-colors duration-200",
+                  "flex items-center w-full p-2 rounded-md transition-colors duration-200 cursor-pointer",
                   pathname === href
                     ? "bg-brand-primary text-white"
                     : "text-gray-700 hover:bg-gray-100"

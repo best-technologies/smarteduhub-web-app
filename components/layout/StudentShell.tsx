@@ -6,7 +6,6 @@ import {
   ListTodo,
   BarChart2,
   Award,
-  MessageSquare,
   Bell,
   User,
   Settings,
