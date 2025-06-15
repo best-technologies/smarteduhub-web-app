@@ -1,230 +1,196 @@
 "use client";
 
 import React, { useState } from "react";
-import { mockSchedule } from "@/data/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Calendar as CalendarIcon,
-} from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Plus, Edit3 } from "lucide-react";
+import TimetableGrid from "@/components/teacher/schedules/TimetableGrid";
+import AddPeriodDialog from "@/components/teacher/schedules/AddPeriodDialog";
 
-// Weekdays for tabs
-const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+// Mock data - this would come from your backend
+const classes = [
+  { id: "jss1", name: "JSS1" },
+  { id: "jss2", name: "JSS2" },
+  { id: "jss3", name: "JSS3" },
+  { id: "ss1", name: "SS1" },
+  { id: "ss2", name: "SS2" },
+  { id: "ss3", name: "SS3" },
+];
+
+const subjects = [
+  { id: "math", name: "Mathematics", color: "#3B82F6" },
+  { id: "english", name: "English Language", color: "#10B981" },
+  { id: "physics", name: "Physics", color: "#8B5CF6" },
+  { id: "chemistry", name: "Chemistry", color: "#F59E0B" },
+  { id: "biology", name: "Biology", color: "#EF4444" },
+  { id: "history", name: "History", color: "#6B7280" },
+];
+
+const teachers = [
+  { id: "teacher1", name: "Mr. Johnson" },
+  { id: "teacher2", name: "Mrs. Smith" },
+  { id: "teacher3", name: "Dr. Williams" },
+  { id: "teacher4", name: "Ms. Brown" },
+];
+
+// Mock timetable data
+const mockTimetableData = [
+  {
+    id: "1",
+    classId: "jss1",
+    day: "Monday",
+    timeSlot: "08:00-09:00",
+    subjectId: "math",
+    teacherId: "teacher1",
+  },
+  {
+    id: "2",
+    classId: "jss1",
+    day: "Monday",
+    timeSlot: "09:00-10:00",
+    subjectId: "english",
+    teacherId: "teacher2",
+  },
+  {
+    id: "3",
+    classId: "jss1",
+    day: "Tuesday",
+    timeSlot: "08:00-09:00",
+    subjectId: "physics",
+    teacherId: "teacher3",
+  },
+];
 
 const TeacherSchedulesPage = () => {
-  const [selectedDay, setSelectedDay] = useState(weekdays[0]);
-  const [viewMode, setViewMode] = useState<"week" | "day">("week");
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingPeriod, setEditingPeriod] = useState<any>(null);
 
-  // Filter schedule for selected day
-  const daySchedule = mockSchedule.filter((item) => item.day === selectedDay);
+  const handleAddPeriod = (periodData: any) => {
+    console.log("Adding period:", periodData);
+    // Here you would make an API call to save the period
+    setIsAddDialogOpen(false);
+  };
 
-  // Current "week" - in a real app, this would be dynamic
-  const currentWeek = "Oct 23 - Oct 27, 2025";
+  const handleEditPeriod = (period: any) => {
+    setEditingPeriod(period);
+    setIsAddDialogOpen(true);
+  };
 
-  const timeSlots = Array.from({ length: 8 }, (_, i) => {
-    const hour = 8 + i;
-    return `${hour}:00`;
-  });
+  const selectedClassData = classes.find((c) => c.id === selectedClass);
+  const classSchedule = mockTimetableData.filter(
+    (item) => item.classId === selectedClass
+  );
 
   return (
-    <div className="">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Class Schedule</h1>
-          <p className="text-gray-500 text-sm">Manage your teaching schedule</p>
-        </div>
-        <Button className="bg-brand-primary hover:bg-brand-primary/90">
-          <Plus className="h-4 w-4 mr-1" />
-          Add Class
-        </Button>
-      </div>
-
-      {/* Weekly Navigation */}
-      <Card className="mb-6">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <Button variant="outline" size="sm">
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Previous
-            </Button>
-
-            <div className="flex items-center">
-              <CalendarIcon className="h-5 w-5 mr-2 text-brand-primary" />
-              <span className="font-medium">{currentWeek}</span>
-            </div>
-
-            <Button variant="outline" size="sm">
-              Next
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
+    <div className="min-h-screen py-6 space-y-6 bg-brand-bg">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-brand-heading">
+              Class Schedules
+            </h1>
+            <p className="text-brand-light-accent-1 mt-1">
+              Manage and view class timetables
+            </p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* View toggles */}
-      <div className="flex justify-end mb-4">
-        <div className="flex border rounded-md">
-          <button
-            onClick={() => setViewMode("week")}
-            className={`px-3 py-1 text-sm ${
-              viewMode === "week"
-                ? "bg-brand-primary text-white"
-                : "bg-white text-gray-700"
-            }`}
+          <Button
+            onClick={() => setIsAddDialogOpen(true)}
+            disabled={!selectedClass}
+            className="flex items-center gap-2"
           >
-            Week
-          </button>
-          <button
-            onClick={() => setViewMode("day")}
-            className={`px-3 py-1 text-sm ${
-              viewMode === "day"
-                ? "bg-brand-primary text-white"
-                : "bg-white text-gray-700"
-            }`}
-          >
-            Day
-          </button>
+            <Plus className="w-4 h-4" />
+            Add Period
+          </Button>
         </div>
-      </div>
 
-      {viewMode === "week" ? (
-        /* Week View */
-        <Tabs
-          defaultValue={selectedDay}
-          onValueChange={(value) => setSelectedDay(value)}
-        >
-          <TabsList className="grid grid-cols-5 mb-6">
-            {weekdays.map((day) => (
-              <TabsTrigger key={day} value={day}>
-                {day}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {weekdays.map((day) => (
-            <TabsContent key={day} value={day}>
-              <Card>
-                <CardHeader className="pb-0">
-                  <CardTitle className="text-lg">
-                    {day}&apos;s Classes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {mockSchedule.filter((item) => item.day === day).length >
-                  0 ? (
-                    <div className="space-y-4">
-                      {mockSchedule
-                        .filter((item) => item.day === day)
-                        .sort((a, b) => a.startTime.localeCompare(b.startTime))
-                        .map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex p-3 border rounded-md relative overflow-hidden card-hover"
-                          >
-                            <div
-                              className="absolute left-0 top-0 bottom-0 w-2"
-                              style={{ backgroundColor: item.color }}
-                            />
-                            <div className="ml-4">
-                              <h3 className="font-medium">
-                                {item.subject}
-                                <span className="ml-2 text-xs text-gray-500">
-                                  {item.subjectCode}
-                                </span>
-                              </h3>
-                              <p className="text-sm text-gray-600 mt-1">
-                                {item.startTime} - {item.endTime}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                {item.room}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  ) : (
-                    <p className="text-center py-8 text-gray-500">
-                      No classes scheduled for {day}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          ))}
-        </Tabs>
-      ) : (
-        /* Day View - Calendar-like */
+        {/* Class Selection */}
         <Card>
-          <CardHeader className="pb-0">
-            <CardTitle className="flex items-center justify-between">
-              <span>{selectedDay}&apos;s Schedule</span>
-              <div className="flex gap-2">
-                {weekdays.map((day) => (
-                  <Button
-                    key={day}
-                    variant={day === selectedDay ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedDay(day)}
-                    className={day === selectedDay ? "bg-brand-primary" : ""}
-                  >
-                    {day.charAt(0)}
-                  </Button>
-                ))}
-              </div>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Edit3 className="w-5 h-5" />
+              Select Class
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="grid grid-cols-[80px_1fr] divide-x">
-              <div className="text-right pr-2 py-2 bg-gray-50">
-                {timeSlots.map((time) => (
-                  <div key={time} className="h-20 text-xs text-gray-500 pt-1">
-                    {time}
-                  </div>
-                ))}
-              </div>
-              <div className="relative min-h-[40rem]">
-                {daySchedule.map((item) => {
-                  // Calculate position and height based on start/end time
-                  const startHour = parseInt(item.startTime.split(":")[0]);
-                  const startMinute = parseInt(
-                    item.startTime.split(":")[1] || "0"
-                  );
-                  const endHour = parseInt(item.endTime.split(":")[0]);
-                  const endMinute = parseInt(item.endTime.split(":")[1] || "0");
-
-                  const top = (startHour - 8 + startMinute / 60) * 5 + "rem";
-                  const duration =
-                    endHour - startHour + (endMinute - startMinute) / 60;
-                  const height = duration * 5 + "rem";
-
-                  return (
-                    <div
-                      key={item.id}
-                      className="absolute left-2 right-2 rounded-md p-2 overflow-hidden"
-                      style={{
-                        top,
-                        height,
-                        backgroundColor: item.color + "30", // Add transparency
-                        borderLeft: `4px solid ${item.color}`,
-                      }}
-                    >
-                      <h4 className="font-medium text-sm">{item.subject}</h4>
-                      <p className="text-xs text-gray-700">
-                        {item.startTime} - {item.endTime}
-                      </p>
-                      <p className="text-xs text-gray-500">{item.room}</p>
-                    </div>
-                  );
-                })}
-              </div>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <Select value={selectedClass} onValueChange={setSelectedClass}>
+                <SelectTrigger className="w-64">
+                  <SelectValue placeholder="Choose a class..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {classes.map((cls) => (
+                    <SelectItem key={cls.id} value={cls.id}>
+                      {cls.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedClassData && (
+                <div className="text-sm text-muted-foreground">
+                  Viewing timetable for{" "}
+                  <strong>{selectedClassData.name}</strong>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
-      )}
+
+        {/* Timetable Grid */}
+        {selectedClass && (
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                Weekly Timetable - {selectedClassData?.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TimetableGrid
+                schedule={classSchedule}
+                subjects={subjects}
+                teachers={teachers}
+                onEditPeriod={handleEditPeriod}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {!selectedClass && (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <div className="text-muted-foreground">
+                <Edit3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg">Select a class to view its timetable</p>
+                <p className="text-sm">
+                  Choose from the dropdown above to get started
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Add/Edit Period Dialog */}
+        <AddPeriodDialog
+          isOpen={isAddDialogOpen}
+          onClose={() => {
+            setIsAddDialogOpen(false);
+            setEditingPeriod(null);
+          }}
+          onSubmit={handleAddPeriod}
+          subjects={subjects}
+          teachers={teachers}
+          editingPeriod={editingPeriod}
+          selectedClass={selectedClass}
+        />
+      </div>
     </div>
   );
 };
