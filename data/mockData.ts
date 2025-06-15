@@ -16,6 +16,12 @@ export interface Subject {
   students: number;
   averageGrade: number;
   nextClass: string;
+  gradeDistribution: {
+    A: number;
+    B: number;
+    C: number;
+    D: number;
+  };
 }
 
 export interface ScheduleItem {
@@ -108,40 +114,44 @@ export const mockStudents: Student[] = [
 // Mock Subjects
 export const mockSubjects: Subject[] = [
   {
-    id: "sub001",
+    id: "1",
     name: "Mathematics",
     code: "MATH101",
-    color: "#1E88E5",
-    students: 32,
+    color: "#3B82F6",
+    students: 28,
     averageGrade: 78,
-    nextClass: "Tomorrow, 9:00 AM",
+    nextClass: "Today, 2:00 PM",
+    gradeDistribution: { A: 8, B: 12, C: 6, D: 2 },
   },
   {
-    id: "sub002",
+    id: "2",
     name: "Science",
     code: "SCI102",
-    color: "#43A047",
+    color: "#10B981",
     students: 28,
     averageGrade: 82,
-    nextClass: "Today, 2:00 PM",
+    nextClass: "Tomorrow, 10:00 AM",
+    gradeDistribution: { A: 10, B: 11, C: 5, D: 2 },
   },
   {
-    id: "sub003",
+    id: "3",
     name: "History",
     code: "HIS103",
-    color: "#FB8C00",
-    students: 30,
+    color: "#F59E0B",
+    students: 25,
     averageGrade: 76,
-    nextClass: "Wed, 11:00 AM",
+    nextClass: "Wednesday, 1:00 PM",
+    gradeDistribution: { A: 7, B: 10, C: 6, D: 2 },
   },
   {
-    id: "sub004",
-    name: "English",
-    code: "ENG104",
-    color: "#E53935",
-    students: 34,
-    averageGrade: 80,
-    nextClass: "Thu, 10:00 AM",
+    id: "4",
+    name: "Physics",
+    code: "PHY104",
+    color: "#EF4444",
+    students: 37,
+    averageGrade: 71,
+    nextClass: "Thursday, 1:00 PM",
+    gradeDistribution: { A: 8, B: 16, C: 5, D: 8 },
   },
 ];
 

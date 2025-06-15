@@ -1,18 +1,64 @@
-"use client";
-
 import React, { useState } from "react";
-import { mockSubjects } from "@/data/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, BookOpen, BarChart3, Users, Clock } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, BarChart3, Clock } from "lucide-react";
 import { AIAgentLogo } from "@/components/AIAgentLogo";
 import { AIAgentModal } from "@/components/AIAgentModal";
 
-const TeacherSubjectsPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+interface Subject {
+  id: string;
+  name: string;
+  code: string;
+  color: string;
+  students: number;
+  averageGrade: number;
+  nextClass: string;
+  gradeDistribution: {
+    A: number;
+    B: number;
+    C: number;
+    D: number;
+  };
+}
+
+// Sample data - you can replace this with your actual data
+const subjects: Subject[] = [
+  {
+    id: "1",
+    name: "Mathematics",
+    code: "MATH101",
+    color: "#3B82F6",
+    students: 28,
+    averageGrade: 78,
+    nextClass: "Today, 2:00 PM",
+    gradeDistribution: { A: 8, B: 12, C: 6, D: 2 },
+  },
+  {
+    id: "2",
+    name: "Science",
+    code: "SCI102",
+    color: "#10B981",
+    students: 28,
+    averageGrade: 82,
+    nextClass: "Tomorrow, 10:00 AM",
+    gradeDistribution: { A: 10, B: 11, C: 5, D: 2 },
+  },
+  {
+    id: "3",
+    name: "History",
+    code: "HIS103",
+    color: "#F59E0B",
+    students: 25,
+    averageGrade: 76,
+    nextClass: "Wednesday, 1:00 PM",
+    gradeDistribution: { A: 7, B: 10, C: 6, D: 2 },
+  },
+];
+
+export function GraphSubjectCards() {
+  const [filteredSubjects] = useState(subjects);
 
   // State for AI Assistant modal
   // and selected subject
@@ -28,42 +74,9 @@ const TeacherSubjectsPage = () => {
     return Math.max((count / totalStudents) * 100, 10); // Minimum 10% height for visibility
   };
 
-  // Filter subjects based on search
-  const filteredSubjects = mockSubjects.filter(
-    (subject) =>
-      subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      subject.code.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <>
-      <div className="py-6 space-y-6 bg-brand-bg">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-brand-heading">Subjects</h1>
-            <p className="text-brand-light-accent-1 text-sm">
-              Manage your teaching subjects
-            </p>
-          </div>
-          {/* Only Admin can add subjects for teachers */}
-          {/* <Button className="bg-brand-primary hover:bg-brand-primary/90">
-            <Plus className="h-4 w-4 mr-1" />
-            Add Subject
-          </Button> */}
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Search subjects..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-
-        {/* Subject Cards */}
+      <div className="mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSubjects.map((subject) => (
             <Card
@@ -190,15 +203,6 @@ const TeacherSubjectsPage = () => {
             </Card>
           ))}
         </div>
-
-        {/* Empty State */}
-        {filteredSubjects.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-lg font-medium">No subjects found</h3>
-            <p className="text-gray-500">Try adjusting your search criteria</p>
-          </div>
-        )}
       </div>
 
       <AIAgentModal
@@ -208,6 +212,4 @@ const TeacherSubjectsPage = () => {
       />
     </>
   );
-};
-
-export default TeacherSubjectsPage;
+}
