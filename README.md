@@ -13,8 +13,8 @@ SmartEduHub is a modern educational platform designed to streamline learning, co
 
 ## Technologies Used
 
-- Frontend: React.js
-- Backend: Node.js, Express.js
+- Frontend: Next.js
+- Backend: Node.js, Express.js/Nest.js
 - Database: MongoDB
 - Authentication: JWT
 - Styling: Tailwind CSS
@@ -51,7 +51,7 @@ SmartEduHub is a modern educational platform designed to streamline learning, co
 
 ## Contributing
 
-Contributions are welcome! Please open issues and submit pull requests for improvements.
+This is a private project, no contributions from the public is allowed.
 
 ## License
 
