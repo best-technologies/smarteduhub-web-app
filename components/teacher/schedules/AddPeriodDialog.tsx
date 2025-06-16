@@ -18,6 +18,31 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
+// Define types for subject and teacher
+interface Subject {
+  id: string;
+  name: string;
+  color: string;
+}
+interface Teacher {
+  id: string;
+  name: string;
+}
+interface PeriodFormData {
+  day: string;
+  timeSlot: string;
+  subjectId: string;
+  teacherId: string;
+}
+interface Period {
+  id: string;
+  classId: string;
+  day: string;
+  timeSlot: string;
+  subjectId: string;
+  teacherId: string;
+}
+
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const timeSlots = [
   "08:00-09:00",
@@ -33,10 +58,10 @@ const timeSlots = [
 interface AddPeriodDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
-  subjects: any[];
-  teachers: any[];
-  editingPeriod?: any;
+  onSubmit: (data: Period) => void;
+  subjects: Subject[];
+  teachers: Teacher[];
+  editingPeriod?: Period;
   selectedClass: string;
 }
 
@@ -49,7 +74,7 @@ const AddPeriodDialog: React.FC<AddPeriodDialogProps> = ({
   editingPeriod,
   selectedClass,
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PeriodFormData>({
     day: "",
     timeSlot: "",
     subjectId: "",

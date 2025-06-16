@@ -16,23 +16,45 @@ const timeSlots = [
   "15:00-16:00",
 ];
 
+// Define types for your data
+interface Period {
+  id: string;
+  classId: string;
+  day: string;
+  timeSlot: string;
+  subjectId: string;
+  teacherId: string;
+  isNew?: boolean;
+}
+
+interface Subject {
+  id: string;
+  name: string;
+  color: string;
+}
+
+interface Teacher {
+  id: string;
+  name: string;
+}
+
 interface TimetableGridProps {
-  schedule: any[];
-  subjects: any[];
-  teachers: any[];
-  onEditPeriod: (period: any) => void;
+  periods: Period[];
+  subjects: Subject[];
+  teachers: Teacher[];
+  onEdit: (period: Period) => void;
 }
 
 const TimetableGrid: React.FC<TimetableGridProps> = ({
-  schedule,
+  periods,
   subjects,
   teachers,
-  onEditPeriod,
+  onEdit,
 }) => {
   const isMobile = useIsMobile();
 
   const getPeriodForSlot = (day: string, timeSlot: string) => {
-    return schedule.find(
+    return periods.find(
       (period) => period.day === day && period.timeSlot === timeSlot
     );
   };
@@ -96,8 +118,16 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({
                       className="p-2 h-8 w-8"
                       onClick={() =>
                         period
-                          ? onEditPeriod(period)
-                          : onEditPeriod({ day, timeSlot, isNew: true })
+                          ? onEdit(period)
+                          : onEdit({
+                              id: "",
+                              classId: "",
+                              subjectId: "",
+                              teacherId: "",
+                              day,
+                              timeSlot,
+                              isNew: true,
+                            })
                       }
                     >
                       <Edit className="w-3 h-3" />
@@ -157,7 +187,7 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({
                         backgroundColor: `${subject.color}15`,
                         borderColor: subject.color,
                       }}
-                      onClick={() => onEditPeriod(period)}
+                      onClick={() => onEdit(period)}
                     >
                       <div className="flex flex-col h-full justify-between">
                         <div>
@@ -180,7 +210,7 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({
                           className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-5 w-5 lg:h-6 lg:w-6 self-end"
                           onClick={(e) => {
                             e.stopPropagation();
-                            onEditPeriod(period);
+                            onEdit(period);
                           }}
                         >
                           <Edit className="w-2 h-2 lg:w-3 lg:h-3" />
@@ -194,7 +224,15 @@ const TimetableGrid: React.FC<TimetableGridProps> = ({
                         size="sm"
                         className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] lg:text-xs p-1 h-auto"
                         onClick={() =>
-                          onEditPeriod({ day, timeSlot, isNew: true })
+                          onEdit({
+                            id: "",
+                            classId: "",
+                            subjectId: "",
+                            teacherId: "",
+                            day,
+                            timeSlot,
+                            isNew: true,
+                          })
                         }
                       >
                         + Add Period

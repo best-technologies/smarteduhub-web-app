@@ -14,7 +14,16 @@ import { Plus, Edit3 } from "lucide-react";
 import TimetableGrid from "@/components/teacher/schedules/TimetableGrid";
 import AddPeriodDialog from "@/components/teacher/schedules/AddPeriodDialog";
 
-// Mock data - this would come from your backend
+// Define a type for a period
+type Period = {
+  id: string;
+  classId: string;
+  day: string;
+  timeSlot: string;
+  subjectId: string;
+  teacherId: string;
+};
+
 const classes = [
   { id: "jss1", name: "JSS1" },
   { id: "jss2", name: "JSS2" },
@@ -41,7 +50,7 @@ const teachers = [
 ];
 
 // Mock timetable data
-const mockTimetableData = [
+const mockTimetableData: Period[] = [
   {
     id: "1",
     classId: "jss1",
@@ -71,15 +80,15 @@ const mockTimetableData = [
 const TeacherSchedulesPage = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingPeriod, setEditingPeriod] = useState<any>(null);
+  const [editingPeriod, setEditingPeriod] = useState<Period | null>(null);
 
-  const handleAddPeriod = (periodData: any) => {
+  const handleAddPeriod = (periodData: Period) => {
     console.log("Adding period:", periodData);
     // Here you would make an API call to save the period
     setIsAddDialogOpen(false);
   };
 
-  const handleEditPeriod = (period: any) => {
+  const handleEditPeriod = (period: Period) => {
     setEditingPeriod(period);
     setIsAddDialogOpen(true);
   };
@@ -154,10 +163,10 @@ const TeacherSchedulesPage = () => {
             </CardHeader>
             <CardContent>
               <TimetableGrid
-                schedule={classSchedule}
+                periods={classSchedule}
                 subjects={subjects}
                 teachers={teachers}
-                onEditPeriod={handleEditPeriod}
+                onEdit={handleEditPeriod}
               />
             </CardContent>
           </Card>
@@ -187,7 +196,7 @@ const TeacherSchedulesPage = () => {
           onSubmit={handleAddPeriod}
           subjects={subjects}
           teachers={teachers}
-          editingPeriod={editingPeriod}
+          editingPeriod={editingPeriod ?? undefined}
           selectedClass={selectedClass}
         />
       </div>
