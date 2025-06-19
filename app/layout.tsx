@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
+import VoiceflowAgent from "@/components/ai-agent/VoiceflowAgent";
 
 export const metadata = {
   title: "SmartEdu Hub - Your School Management Solution",
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Toaster />
             <Sonner />
             {children}
+            <VoiceflowAgent /> {/* Add the assistant here */}
           </TooltipProvider>
         </QueryProvider>
       </body>
