@@ -2,13 +2,7 @@
 
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 import { Plus, Edit3 } from "lucide-react";
 import TimetableGrid from "@/components/teacher/schedules/TimetableGrid";
@@ -77,10 +71,19 @@ const mockTimetableData: Period[] = [
   },
 ];
 
+import { useEffect } from "react";
+
 const TeacherSchedulesPage = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingPeriod, setEditingPeriod] = useState<Period | null>(null);
+
+  // Set default selected class on mount
+  useEffect(() => {
+    if (selectedClass === "" && classes.length > 0) {
+      setSelectedClass(classes[0].id);
+    }
+  }, [selectedClass]);
 
   const handleAddPeriod = (periodData: Period) => {
     console.log("Adding period:", periodData);
@@ -121,37 +124,34 @@ const TeacherSchedulesPage = () => {
           </Button>
         </div>
 
-        {/* Class Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Edit3 className="w-5 h-5" />
-              Select Class
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4">
-              <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="Choose a class..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {classes.map((cls) => (
-                    <SelectItem key={cls.id} value={cls.id}>
-                      {cls.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedClassData && (
-                <div className="text-sm text-muted-foreground">
-                  Viewing timetable for{" "}
-                  <strong>{selectedClassData.name}</strong>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Class Selection as Badges */}
+        <div className="flex items-center gap-2 mb-2">
+          {classes.map((cls, idx) => (
+            <button
+              key={cls.id}
+              type="button"
+              className={`px-4 py-1 rounded-full text-sm font-medium transition-colors
+          ${
+            selectedClass
+              ? selectedClass === cls.id
+                ? "bg-brand-primary text-white"
+                : "border border-brand-border bg-white text-brand-light-accent-1 cursor-pointer"
+              : idx === 0
+              ? "bg-brand-primary text-white"
+              : "border border-brand-border bg-white text-brand-light-accent-1"
+          }
+              `}
+              onClick={() => setSelectedClass(cls.id)}
+            >
+              {cls.name}
+            </button>
+          ))}
+        </div>
+        {selectedClassData && (
+          <div className="text-sm text-brand-light-accent-1 my-4">
+            Viewing timetable for <strong>{selectedClassData.name}</strong>
+          </div>
+        )}
 
         {/* Timetable Grid */}
         {selectedClass && (
