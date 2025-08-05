@@ -5,16 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Upload, FileText, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SuccessModal from "@/components/home/SuccessModal";
+import ErrorModal from "@/components/home/ErrorModal";
+import { registerSchool } from "@/lib/api/registration";
 
 interface UploadedFile {
   name: string;
   size: number;
   progress: number;
+  file: File; // Add the actual File object
 }
 
 const ConfirmCreate = () => {
   const router = useRouter();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [uploadedFiles, setUploadedFiles] = useState<{
     cac: UploadedFile | null;
@@ -35,6 +41,7 @@ const ConfirmCreate = () => {
       name: file.name,
       size: file.size,
       progress: 0,
+      file: file, // Store the actual File object
     };
 
     setUploadedFiles((prev) => ({ ...prev, [type]: newFile }));
@@ -74,31 +81,64 @@ const ConfirmCreate = () => {
     );
   };
 
-  const handleSubmit = () => {
-    if (isAllUploaded()) {
+  const handleSubmit = async () => {
+    if (!isAllUploaded()) return;
+
+    setIsSubmitting(true);
+
+    try {
       // Get form data from previous step
-      const schoolFormData = localStorage.getItem("schoolFormData");
+      const schoolFormDataString = localStorage.getItem("schoolFormData");
+      if (!schoolFormDataString) {
+        setErrorMessage(
+          "School information is missing. Please start the registration process again."
+        );
+        setShowErrorModal(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      const schoolFormData = JSON.parse(schoolFormDataString);
+
+      // Prepare document data
       const documentData = {
-        cac: uploadedFiles.cac,
-        utility: uploadedFiles.utility,
-        taxId: uploadedFiles.taxId,
+        cac: uploadedFiles.cac?.file || null,
+        utility: uploadedFiles.utility?.file || null,
+        taxId: uploadedFiles.taxId?.file || null,
       };
 
-      console.log("School Form Data:", JSON.parse(schoolFormData || "{}"));
-      console.log("Document Data:", documentData);
+      // Call registration API
+      const response = await registerSchool(schoolFormData, documentData);
 
-      // Clear stored data
-      localStorage.removeItem("schoolFormData");
-
-      // Show success modal instead of alert
-      setShowSuccessModal(true);
+      if (response.success && response.statusCode === 201) {
+        // Clear stored data on success
+        localStorage.removeItem("schoolFormData");
+        setShowSuccessModal(true);
+      } else {
+        // Show error modal
+        setErrorMessage(
+          response.message || "Registration failed. Please try again."
+        );
+        setShowErrorModal(true);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setErrorMessage("An unexpected error occurred. Please try again.");
+      setShowErrorModal(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleModalClose = () => {
+  const handleSuccessModalClose = () => {
     setShowSuccessModal(false);
-    // Redirect to home page after closing the modal
+    // Redirect to home page after closing the success modal
     router.push("/");
+  };
+
+  const handleErrorModalClose = () => {
+    setShowErrorModal(false);
+    // Stay on the current page to allow retry
   };
 
   const FileUploadArea = ({
@@ -250,20 +290,27 @@ const ConfirmCreate = () => {
 
           <Button
             onClick={handleSubmit}
-            disabled={!isAllUploaded()}
+            disabled={!isAllUploaded() || isSubmitting}
             className={`w-full py-3 text-white font-medium rounded-lg transition-colors ${
-              isAllUploaded()
+              isAllUploaded() && !isSubmitting
                 ? "bg-brand-primary hover:bg-[#4338CA]"
                 : "bg-gray-300 cursor-not-allowed"
             }`}
           >
-            Submit Application
+            {isSubmitting ? "Submitting..." : "Submit Application"}
           </Button>
         </div>
       </div>
 
       {/* Success Modal */}
-      <SuccessModal open={showSuccessModal} onClose={handleModalClose} />
+      <SuccessModal open={showSuccessModal} onClose={handleSuccessModalClose} />
+
+      {/* Error Modal */}
+      <ErrorModal
+        open={showErrorModal}
+        onClose={handleErrorModalClose}
+        message={errorMessage}
+      />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import VoiceflowAgent from "@/components/ai-agent/VoiceflowAgent";
 
 export const metadata = {
@@ -66,14 +67,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <QueryProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            {children}
-            <VoiceflowAgent /> {/* Add the assistant here */}
-          </TooltipProvider>
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              {children}
+              <VoiceflowAgent /> {/* Add the assistant here */}
+            </TooltipProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
