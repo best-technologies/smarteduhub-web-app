@@ -2,13 +2,28 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { IconHeading } from "@/components/IconHeading";
 
 const VerifyOtp = () => {
   const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", ""]); // Only 4 values now
   const [timeLeft, setTimeLeft] = useState(60);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Get email from session storage on mount
+  useEffect(() => {
+    const pendingEmail = sessionStorage.getItem("pendingAuthEmail");
+    if (pendingEmail) {
+      setEmail(pendingEmail);
+    } else {
+      // Redirect to login if no pending auth
+      router.push("/login");
+    }
+  }, [router]);
 
   // Timer for resend OTP
   useEffect(() => {
@@ -24,6 +39,9 @@ const VerifyOtp = () => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+
+    // Clear error when user starts typing
+    if (error) setError("");
 
     // Auto-focus next input
     if (value && index < 3) {
@@ -53,21 +71,60 @@ const VerifyOtp = () => {
     return otp.every((digit) => digit !== "");
   };
 
-  const handleVerify = () => {
-    if (isOtpComplete()) {
+  const handleVerify = async () => {
+    if (!isOtpComplete() || !email) return;
+
+    setIsLoading(true);
+    setError("");
+
+    try {
       const otpCode = otp.join("");
-      console.log("OTP verification code:", otpCode);
-      // Here you would typically verify the OTP with your backend
-      // For now, just navigate to dashboard or home
-      router.push("/");
+
+      const result = await signIn("credentials", {
+        email,
+        otp: otpCode,
+        mode: "otp",
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+
+      if (result?.ok) {
+        // Clear pending auth and redirect to admin dashboard
+        sessionStorage.removeItem("pendingAuthEmail");
+        router.push("/admin");
+      }
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleResendOtp = () => {
-    console.log("Resending OTP...");
-    setTimeLeft(60);
-    setOtp(["", "", "", ""]);
-    inputRefs.current[0]?.focus();
+  const handleResendOtp = async () => {
+    if (!email) return;
+
+    try {
+      setError("");
+      // Trigger OTP resend by attempting login again
+      await signIn("credentials", {
+        email,
+        password: "", // Won't be used for OTP resend
+        mode: "resend",
+        redirect: false,
+      });
+
+      setTimeLeft(60);
+      setOtp(["", "", "", ""]);
+      inputRefs.current[0]?.focus();
+    } catch (err) {
+      console.error("Resend OTP error:", err);
+      setError("Failed to resend OTP. Please try again.");
+    }
   };
 
   return (
@@ -84,6 +141,13 @@ const VerifyOtp = () => {
             Please enter it below to verify your account.
           </p>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
 
         {/* OTP Input */}
         <div className="mb-6">
@@ -111,14 +175,14 @@ const VerifyOtp = () => {
         {/* Verify Button */}
         <Button
           onClick={handleVerify}
-          disabled={!isOtpComplete()}
+          disabled={!isOtpComplete() || isLoading}
           className={`w-full py-3 text-white font-medium rounded-lg transition-colors mb-6 ${
-            isOtpComplete()
+            isOtpComplete() && !isLoading
               ? "bg-brand-primary hover:bg-brand-primary-hover"
               : "bg-gray-300 cursor-not-allowed"
           }`}
         >
-          Verify & Continue
+          {isLoading ? "Verifying..." : "Verify & Continue"}
         </Button>
 
         {/* Resend OTP */}

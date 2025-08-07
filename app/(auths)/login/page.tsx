@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,20 +17,71 @@ const Login = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (error) setError("");
   };
 
   const isFormValid = () => {
     return formData.email.trim() !== "" && formData.password.trim() !== "";
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid()) {
-      // Simulate login flow - navigate to OTP verification
-      router.push("/verify-otp");
+    if (!isFormValid()) return;
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        mode: "login",
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+
+      if (result?.ok) {
+        // Check if user needs OTP (school director)
+        const response = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user?.requiresOtp) {
+            // Navigate to OTP verification for school directors
+            sessionStorage.setItem("pendingAuthEmail", formData.email);
+            router.push("/verify-otp");
+          } else {
+            // Direct redirect for teachers and students
+            const role = data.user?.role;
+            if (role === "teacher") {
+              router.push("/teacher");
+            } else if (role === "student") {
+              router.push("/student");
+            } else {
+              router.push("/admin");
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,6 +100,13 @@ const Login = () => {
             Enter your credentials to access your account
           </p>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-6">
@@ -131,14 +190,14 @@ const Login = () => {
 
           <Button
             type="submit"
-            disabled={!isFormValid()}
+            disabled={!isFormValid() || isLoading}
             className={`w-full py-3 text-white font-medium rounded-lg transition-colors ${
-              isFormValid()
+              isFormValid() && !isLoading
                 ? "bg-brand-primary hover:bg-[#4338CA]"
                 : "bg-gray-300 cursor-not-allowed"
             }`}
           >
-            Sign In
+            {isLoading ? "Signing In..." : "Sign In"}
           </Button>
         </form>
 

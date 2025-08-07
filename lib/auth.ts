@@ -8,6 +8,8 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        otp: { label: "OTP", type: "text" },
+        isOtpVerification: { label: "Is OTP Verification", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -15,10 +17,43 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // This would be used for login authentication later
-          // For now, we're focusing on registration
+          // Handle OTP verification for admins
+          if (credentials.isOtpVerification === "true" && credentials.otp) {
+            const response = await fetch(
+              "https://smart-edu-hub.onrender.com/api/v1/auth/director-verify-login-otp",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: credentials.email,
+                  otp: credentials.otp,
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+              return {
+                id: data.data.id,
+                email: data.data.email,
+                name: `${data.data.first_name} ${data.data.last_name}`,
+                role: data.data.role,
+                schoolId: data.data.school_id,
+                firstName: data.data.first_name,
+                lastName: data.data.last_name,
+                phoneNumber: data.data.phone_number,
+                isEmailVerified: data.data.is_email_verified,
+              };
+            }
+            return null;
+          }
+
+          // Handle initial login
           const response = await fetch(
-            "https://smart-edu-hub.onrender.com/api/v1/auth/login",
+            "https://smart-edu-hub.onrender.com/api/v1/auth/sign-in",
             {
               method: "POST",
               headers: {
@@ -35,11 +70,16 @@ export const authOptions: NextAuthOptions = {
 
           if (response.ok && data.success) {
             return {
-              id: data.data.user.id,
-              email: data.data.user.email,
-              name: data.data.user.name || data.data.user.schoolName,
-              role: data.data.user.role,
-              accessToken: data.data.accessToken,
+              id: data.data.id,
+              email: data.data.email,
+              name: `${data.data.first_name} ${data.data.last_name}`,
+              role: data.data.role,
+              schoolId: data.data.school_id,
+              firstName: data.data.first_name,
+              lastName: data.data.last_name,
+              phoneNumber: data.data.phone_number,
+              isEmailVerified: data.data.is_email_verified,
+              requiresOtp: data.data.role === "school_director",
             };
           }
 
@@ -54,18 +94,40 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.accessToken;
         token.role = user.role;
+        token.schoolId = user.schoolId;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.phoneNumber = user.phoneNumber;
+        token.isEmailVerified = user.isEmailVerified;
+        token.requiresOtp = user.requiresOtp;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.sub || "";
-        session.user.accessToken = token.accessToken;
         session.user.role = token.role;
+        session.user.schoolId = token.schoolId;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+        session.user.phoneNumber = token.phoneNumber;
+        session.user.isEmailVerified = token.isEmailVerified;
+        session.user.requiresOtp = token.requiresOtp;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Disable authentication in development
+      if (process.env.NODE_ENV === "development") {
+        return url.startsWith(baseUrl) ? url : baseUrl;
+      }
+
+      // Handle role-based redirects in production
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      return baseUrl;
     },
   },
   pages: {
