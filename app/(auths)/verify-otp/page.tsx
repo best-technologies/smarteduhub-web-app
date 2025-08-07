@@ -111,7 +111,7 @@ const VerifyOtp = () => {
     try {
       setError("");
       // Trigger OTP resend by attempting login again
-      const result = await signIn("credentials", {
+      await signIn("credentials", {
         email,
         password: "dummy", // Backend needs password for initial login call
         redirect: false,

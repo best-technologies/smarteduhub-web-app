@@ -95,12 +95,14 @@ export const authOptions: NextAuthOptions = {
           }
 
           throw new Error(data.message || "Invalid credentials");
-        } catch (error: any) {
+        } catch (error: unknown) {
           // Don't log OTP_REQUIRED as an error - it's expected behavior
-          if (error.message !== "OTP_REQUIRED") {
+          const errorMessage =
+            error instanceof Error ? error.message : "Authentication failed";
+          if (errorMessage !== "OTP_REQUIRED") {
             console.error("Auth error:", error);
           }
-          throw new Error(error.message || "Authentication failed");
+          throw new Error(errorMessage);
         }
       },
     }),
