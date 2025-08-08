@@ -20,8 +20,13 @@ export const authOptions: NextAuthOptions = {
           // Handle OTP verification for admins
           if (credentials.isOtpVerification === "true" && credentials.otp) {
             // For OTP verification, we don't need password validation
+            const backendUrl = process.env.BACKEND_URL;
+            if (!backendUrl) {
+              throw new Error("Backend URL not configured");
+            }
+
             const response = await fetch(
-              `${process.env.BACKEND_URL}/auth/director-verify-login-otp`,
+              `${backendUrl}/auth/director-verify-login-otp`,
               {
                 method: "POST",
                 headers: {
@@ -58,19 +63,21 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          const response = await fetch(
-            `${process.env.BACKEND_URL}/auth/sign-in`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-            }
-          );
+          const backendUrl = process.env.BACKEND_URL;
+          if (!backendUrl) {
+            throw new Error("Backend URL not configured");
+          }
+
+          const response = await fetch(`${backendUrl}/auth/sign-in`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
 
           const data = await response.json();
 
@@ -134,15 +141,17 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Disable authentication in development
-      if (process.env.NODE_ENV === "development") {
-        return url.startsWith(baseUrl) ? url : baseUrl;
+      // Always allow relative URLs
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
       }
 
-      // Handle role-based redirects in production
+      // Allow same origin URLs
       if (url.startsWith(baseUrl)) {
         return url;
       }
+
+      // Default redirect to base URL
       return baseUrl;
     },
   },
@@ -154,4 +163,5 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
 };

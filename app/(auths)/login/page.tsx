@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,8 +56,28 @@ const Login = () => {
       }
 
       if (result?.ok) {
-        // Success - redirect will be handled by middleware based on role
-        window.location.href = "/admin/dashboard"; // Will redirect to appropriate dashboard
+        // Get the session to determine redirect based on role
+        const session = await getSession();
+
+        if (session?.user?.role) {
+          // Redirect based on user role
+          switch (session.user.role) {
+            case "school_director":
+              router.push("/admin/dashboard");
+              break;
+            case "teacher":
+              router.push("/teacher/dashboard");
+              break;
+            case "student":
+              router.push("/student/home");
+              break;
+            default:
+              router.push("/dashboard");
+          }
+        } else {
+          // Fallback redirect
+          router.push("/dashboard");
+        }
       }
     } catch (err) {
       console.error("Login error:", err);

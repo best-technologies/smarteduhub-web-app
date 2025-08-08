@@ -33,6 +33,13 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# Script to generate secure secrets
+generate-secret.sh
+
+# Code documentation files
+*.md
+/docs
+
 # vercel
 .vercel
 

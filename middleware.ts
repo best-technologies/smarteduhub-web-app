@@ -6,11 +6,6 @@ export default withAuth(
     const { pathname } = req.nextUrl;
     const token = req.nextauth.token;
 
-    // Skip auth in development
-    if (process.env.NODE_ENV === "development") {
-      return NextResponse.next();
-    }
-
     // If no token, redirect to login (only for dashboard routes)
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -42,11 +37,6 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        // Skip auth in development
-        if (process.env.NODE_ENV === "development") {
-          return true;
-        }
-
         const { pathname } = req.nextUrl;
 
         // Only require auth for dashboard routes
