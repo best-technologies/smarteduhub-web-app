@@ -21,7 +21,7 @@ export const authOptions: NextAuthOptions = {
           if (credentials.isOtpVerification === "true" && credentials.otp) {
             // For OTP verification, we don't need password validation
             const response = await fetch(
-              "https://smart-edu-hub.onrender.com/api/v1/auth/director-verify-login-otp",
+              `${process.env.BACKEND_URL}/auth/director-verify-login-otp`,
               {
                 method: "POST",
                 headers: {
@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           const response = await fetch(
-            "https://smart-edu-hub.onrender.com/api/v1/auth/sign-in",
+            `${process.env.BACKEND_URL}/auth/sign-in`,
             {
               method: "POST",
               headers: {

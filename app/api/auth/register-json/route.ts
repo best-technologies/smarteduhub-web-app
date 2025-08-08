@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     // Send to backend API as JSON
     const response = await fetch(
-      "https://smart-edu-hub.onrender.com/api/v1/auth/onboard-school",
+      `${process.env.BACKEND_URL}/auth/onboard-school`,
       {
         method: "POST",
         headers: {

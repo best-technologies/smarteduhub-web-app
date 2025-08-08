@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("Sending to backend:", {
-      endpoint: "https://smart-edu-hub.onrender.com/api/v1/auth/onboard-school",
+      endpoint: `${process.env.BACKEND_URL}/auth/onboard-school`,
       method: "POST",
       contentType: "multipart/form-data",
       fields: [
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
 
     // Send to backend API with correct endpoint
     const response = await fetch(
-      "https://smart-edu-hub.onrender.com/api/v1/auth/onboard-school",
+      `${process.env.BACKEND_URL}/auth/onboard-school`,
       {
         method: "POST",
         body: backendFormData,
