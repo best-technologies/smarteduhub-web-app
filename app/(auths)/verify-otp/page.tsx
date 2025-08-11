@@ -12,15 +12,24 @@ const VerifyOtp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
+  const [flowType, setFlowType] = useState<
+    "admin_login" | "password_reset" | null
+  >(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Get email from session storage on mount
+  // Get email and determine flow type from session storage on mount
   useEffect(() => {
-    const pendingEmail = sessionStorage.getItem("pendingAuthEmail");
-    if (pendingEmail) {
-      setEmail(pendingEmail);
+    const pendingAuthEmail = sessionStorage.getItem("pendingAuthEmail");
+    const passwordResetEmail = sessionStorage.getItem("passwordResetEmail");
+
+    if (passwordResetEmail) {
+      setEmail(passwordResetEmail);
+      setFlowType("password_reset");
+    } else if (pendingAuthEmail) {
+      setEmail(pendingAuthEmail);
+      setFlowType("admin_login");
     } else {
-      // Redirect to login if no pending auth
+      // Redirect to login if no pending auth or password reset
       router.push("/login");
     }
   }, [router]);
@@ -72,7 +81,7 @@ const VerifyOtp = () => {
   };
 
   const handleVerify = async () => {
-    if (!isOtpComplete() || !email) return;
+    if (!isOtpComplete() || !email || !flowType) return;
 
     setIsLoading(true);
     setError("");
@@ -80,44 +89,110 @@ const VerifyOtp = () => {
     try {
       const otpCode = otp.join("");
 
-      const result = await signIn("credentials", {
-        email,
-        otp: otpCode,
-        isOtpVerification: "true",
-        redirect: false,
-      });
+      if (flowType === "admin_login") {
+        // Handle admin login OTP verification (existing flow)
+        const result = await signIn("credentials", {
+          email,
+          otp: otpCode,
+          isOtpVerification: "true",
+          redirect: false,
+        });
 
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
+        if (result?.error) {
+          setError(result.error);
+          return;
+        }
 
-      if (result?.ok) {
-        // Clear pending auth and redirect to admin dashboard
-        sessionStorage.removeItem("pendingAuthEmail");
-        window.location.href = "/admin/dashboard"; // Force page reload to avoid cache issues
+        if (result?.ok) {
+          // Clear pending auth and redirect to admin dashboard
+          sessionStorage.removeItem("pendingAuthEmail");
+          window.location.href = "/admin/dashboard"; // Force page reload to avoid cache issues
+        }
+      } else if (flowType === "password_reset") {
+        // Handle password reset OTP verification (new flow)
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || process.env.BACKEND_URL
+          }/auth/verify-password-reset-otp`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              otp: otpCode,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Clear password reset email and redirect to create password
+          sessionStorage.removeItem("passwordResetEmail");
+          sessionStorage.setItem("passwordResetVerified", email); // Store for create password page
+          router.push("/create-password");
+        } else {
+          if (response.status === 400) {
+            setError(
+              "Invalid or expired OTP. Please try again or request a new code."
+            );
+          } else {
+            setError(
+              data.message || "OTP verification failed. Please try again."
+            );
+          }
+        }
       }
     } catch (err) {
       console.error("OTP verification error:", err);
-      setError("An unexpected error occurred. Please try again.");
+      setError(
+        "Unable to connect to the server. Please check your internet connection and try again."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
-    if (!email) return;
+    if (!email || !flowType) return;
 
     try {
       setError("");
-      // Trigger OTP resend by attempting login again
-      await signIn("credentials", {
-        email,
-        password: "dummy", // Backend needs password for initial login call
-        redirect: false,
-      });
 
-      // Ignore the result - we just want to trigger OTP sending
+      if (flowType === "admin_login") {
+        // Resend admin login OTP (existing flow)
+        await signIn("credentials", {
+          email,
+          password: "dummy", // Backend needs password for initial login call
+          redirect: false,
+        });
+      } else if (flowType === "password_reset") {
+        // Resend password reset OTP (new flow)
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || process.env.BACKEND_URL
+          }/auth/request-password-reset-otp`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const data = await response.json();
+          setError(data.message || "Failed to resend OTP. Please try again.");
+          return;
+        }
+      }
+
+      // Reset timer and form on successful resend
       setTimeLeft(60);
       setOtp(["", "", "", "", "", ""]); // Changed to 6 empty values
       inputRefs.current[0]?.focus();
@@ -134,11 +209,14 @@ const VerifyOtp = () => {
         <div className="text-center mb-8">
           <IconHeading />
           <h2 className="text-xl font-medium text-brand-heading mb-2">
-            Verify your email
+            {flowType === "password_reset"
+              ? "Verify Reset Code"
+              : "Verify your email"}
           </h2>
           <p className="text-brand-light-accent-1 text-sm">
-            We&apos;ve sent a 6-character verification code to your email
-            address. Please enter it below to verify your account.
+            {flowType === "password_reset"
+              ? "We've sent a 6-character reset code to your email address. Please enter it below to continue with your password reset."
+              : "We've sent a 6-character verification code to your email address. Please enter it below to verify your account."}
           </p>
         </div>
 
@@ -181,7 +259,11 @@ const VerifyOtp = () => {
               : "bg-gray-300 cursor-not-allowed"
           }`}
         >
-          {isLoading ? "Verifying..." : "Verify & Continue"}
+          {isLoading
+            ? "Verifying..."
+            : flowType === "password_reset"
+            ? "Verify & Reset Password"
+            : "Verify & Continue"}
         </Button>
 
         {/* Resend OTP */}
