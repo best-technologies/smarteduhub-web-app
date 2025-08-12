@@ -3,11 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useOnboarding } from "@/contexts/OnboardingContext";
-import { User, Mail, Phone, Trash2 } from "lucide-react";
+import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import TeacherUploadSection from "@/components/onboarding/TeacherUploadSection";
+import ManualTeacherForm from "@/components/onboarding/ManualTeacherForm";
+import TeacherList from "@/components/onboarding/TeacherList";
+import {
+  authenticatedApi,
+  AuthenticatedApiError,
+} from "@/lib/api/authenticated";
 
 type TeacherFormData = {
   firstName: string;
@@ -16,57 +27,93 @@ type TeacherFormData = {
   phoneNumber: string;
 };
 
-function isValidEmail(email: string) {
-  // Simple email regex for validation
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+type UploadedTeacher = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+};
 
 export default function OnboardTeachers() {
   const router = useRouter();
   const { data, addTeacher, removeTeacher } = useOnboarding();
 
-  const [formData, setFormData] = useState<TeacherFormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleInputChange = (field: keyof TeacherFormData, value: string) => {
-    if (field === "phoneNumber") {
-      // Limit phone number to 11 characters
-      value = value.replace(/\D/g, "").slice(0, 11);
-    }
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleTeachersUploaded = (teachers: TeacherFormData[]) => {
+    teachers.forEach((teacher) => {
+      addTeacher(teacher);
+    });
   };
 
-  const isFormValid = () => {
-    return (
-      Object.values(formData).every((value) => value.trim() !== "") &&
-      isValidEmail(formData.email)
-    );
+  const handleManualTeacherAdd = (teacher: TeacherFormData) => {
+    addTeacher(teacher);
   };
 
-  const handleAddTeacher = () => {
-    if (isFormValid()) {
-      addTeacher(formData);
-      console.log("Teacher added:", formData);
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-      });
-    }
+  const handleError = (message: string) => {
+    setErrorMessage(message);
+    setShowErrorModal(true);
   };
 
   const handleRemoveTeacher = (id: string) => {
     removeTeacher(id);
   };
 
-  const handleNext = () => {
-    console.log("Teachers data:", data.teachers);
+  const handleNext = async () => {
+    if (data.teachers.length === 0) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const teachersPayload: UploadedTeacher[] = data.teachers.map(
+        (teacher) => ({
+          first_name: teacher.firstName,
+          last_name: teacher.lastName,
+          email: teacher.email,
+          phone_number: teacher.phoneNumber,
+        })
+      );
+
+      const response = await authenticatedApi.post("/auth/onboard-teachers", {
+        teachers: teachersPayload,
+      });
+
+      if (response.success) {
+        setShowSuccessModal(true);
+      } else {
+        throw new AuthenticatedApiError(
+          response.message || "Failed to onboard teachers",
+          response.statusCode || 400,
+          response
+        );
+      }
+    } catch (error: unknown) {
+      if (error instanceof AuthenticatedApiError) {
+        if (error.statusCode === 401) {
+          setErrorMessage("Your session has expired. Please login again.");
+        } else {
+          setErrorMessage(error.message);
+        }
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
     router.push("/onboarding-students");
+  };
+
+  const handleErrorModalClose = () => {
+    setShowErrorModal(false);
   };
 
   const handleBack = () => {
@@ -111,152 +158,30 @@ export default function OnboardTeachers() {
             </p>
           </div>
 
-          {/* Add Teacher Form */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <Label
-                htmlFor="firstName"
-                className="text-sm font-medium text-brand-heading"
-              >
-                First Name
-              </Label>
-              <Input
-                id="firstName"
-                placeholder="E.g. John"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="lastName"
-                className="text-sm font-medium text-brand-heading"
-              >
-                Last Name
-              </Label>
-              <Input
-                id="lastName"
-                placeholder="E.g. Adamu"
-                value={formData.lastName}
-                onChange={(e) => handleInputChange("lastName", e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="email"
-                className="text-sm font-medium text-brand-heading"
-              >
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="E.g. john@schoolname.com"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                className="mt-1"
-              />
-              {!isValidEmail(formData.email) && formData.email && (
-                <span className="text-xs text-red-500">
-                  Please enter a valid email address.
-                </span>
-              )}
-            </div>
-            <div>
-              <Label
-                htmlFor="phoneNumber"
-                className="text-sm font-medium text-brand-heading"
-              >
-                Phone Number
-              </Label>
-              <Input
-                id="phoneNumber"
-                placeholder="E.g. 09012345678"
-                value={formData.phoneNumber}
-                onChange={(e) =>
-                  handleInputChange("phoneNumber", e.target.value)
-                }
-                className="mt-1"
-                maxLength={11}
-                inputMode="numeric"
-              />
-            </div>
+          {/* File Upload Section */}
+          <TeacherUploadSection
+            onTeachersUploaded={handleTeachersUploaded}
+            existingTeachers={data.teachers}
+          />
+
+          <div className="flex items-center mb-6">
+            <hr className="flex-1 border-gray-300" />
+            <span className="px-4 text-sm text-brand-light-accent-2">OR</span>
+            <hr className="flex-1 border-gray-300" />
           </div>
 
-          <div className="mb-8">
-            <Button
-              onClick={handleAddTeacher}
-              disabled={!isFormValid()}
-              className={`px-6 ${
-                isFormValid()
-                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Add Teacher
-            </Button>
-          </div>
+          {/* Manual Add Teacher Form */}
+          <ManualTeacherForm
+            onAddTeacher={handleManualTeacherAdd}
+            onError={handleError}
+            existingTeachers={data.teachers}
+          />
 
-          {/* Added Teachers */}
-          {data.teachers.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-4">
-                <User className="w-6 h-6 text-gray-400" />
-              </div>
-              <p className="text-brand-light-accent-2 text-sm">
-                No teachers added yet. Add your first teacher to get started
-              </p>
-            </div>
-          ) : (
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-brand-heading">
-                  Teachers Added
-                </h3>
-                <span className="text-sm text-brand-light-accent-2">
-                  {data.teachers.length} teacher
-                  {data.teachers.length !== 1 ? "s" : ""}
-                </span>
-              </div>
-              <div className="space-y-3">
-                {data.teachers.map((teacher) => (
-                  <div
-                    key={teacher.id}
-                    className="flex items-center justify-between p-4 bg-white rounded-lg border border-brand-border"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-brand-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-brand-heading">
-                          {teacher.firstName} {teacher.lastName}
-                        </p>
-                        <div className="flex items-center gap-4 text-sm text-brand-light-accent-2">
-                          <span className="flex items-center gap-1">
-                            <Mail className="w-3 h-3" />
-                            {teacher.email}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Phone className="w-3 h-3" />
-                            {teacher.phoneNumber}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveTeacher(teacher.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Added Teachers List */}
+          <TeacherList
+            teachers={data.teachers}
+            onRemoveTeacher={handleRemoveTeacher}
+          />
 
           {/* Navigation */}
           <div className="flex justify-between border-t border-gray-200 pt-4 mt-8">
@@ -265,13 +190,78 @@ export default function OnboardTeachers() {
             </Button>
             <Button
               onClick={handleNext}
-              className="bg-brand-primary hover:bg-brand-primary/90 text-white px-8"
-              disabled={data.teachers.length === 0}
+              className={`px-8 ${
+                data.teachers.length > 0
+                  ? "bg-brand-primary hover:bg-brand-primary/90 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              disabled={data.teachers.length === 0 || isLoading}
             >
-              Next
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Next"
+              )}
             </Button>
           </div>
         </div>
+
+        {/* Success Modal */}
+        <Dialog open={showSuccessModal} onOpenChange={() => {}}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                Teachers Added Successfully
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-muted-foreground mb-4">
+                Your teachers have been successfully onboarded. Let&apos;s move
+                to the next step and add students.
+              </p>
+              <Button
+                onClick={handleSuccessModalClose}
+                className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white"
+              >
+                Continue to Students
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Error Modal */}
+        <Dialog open={showErrorModal} onOpenChange={() => {}}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+                Error
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-muted-foreground mb-4">{errorMessage}</p>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleErrorModalClose}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Try Again
+                </Button>
+                <Button
+                  onClick={handleErrorModalClose}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

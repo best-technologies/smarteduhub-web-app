@@ -13,6 +13,7 @@ declare module "next-auth" {
       phoneNumber: string;
       isEmailVerified: boolean;
       requiresOtp?: boolean;
+      accessToken?: string;
     } & DefaultSession["user"];
   }
 
@@ -27,6 +28,7 @@ declare module "next-auth" {
     phoneNumber: string;
     isEmailVerified: boolean;
     requiresOtp?: boolean;
+    accessToken?: string;
   }
 }
 

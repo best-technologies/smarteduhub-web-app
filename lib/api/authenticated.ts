@@ -1,0 +1,123 @@
+import { getSession } from "next-auth/react";
+
+type ApiResponse<T = unknown> = {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+  statusCode?: number;
+};
+
+export class AuthenticatedApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public response?: ApiResponse
+  ) {
+    super(message);
+    this.name = "AuthenticatedApiError";
+  }
+}
+
+export async function makeAuthenticatedRequest<T = unknown>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<ApiResponse<T>> {
+  try {
+    // Get the current session to access the token
+    const session = await getSession();
+
+    if (!session?.user?.accessToken) {
+      throw new AuthenticatedApiError(
+        "No access token available. Please login again.",
+        401
+      );
+    }
+
+    // Prepare headers with Authorization
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.user.accessToken}`,
+      ...((options.headers as Record<string, string>) || {}),
+    };
+
+    // Make the API request
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
+      {
+        ...options,
+        headers,
+      }
+    );
+
+    const data = await response.json();
+
+    // Handle authentication errors
+    if (response.status === 401) {
+      throw new AuthenticatedApiError(
+        "Access token expired or invalid. Please login again.",
+        401,
+        data
+      );
+    }
+
+    // Handle other errors
+    if (!response.ok) {
+      throw new AuthenticatedApiError(
+        data.message || `Request failed with status ${response.status}`,
+        response.status,
+        data
+      );
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof AuthenticatedApiError) {
+      throw error;
+    }
+
+    // Handle network errors
+    throw new AuthenticatedApiError(
+      "Network error occurred. Please check your connection.",
+      0
+    );
+  }
+}
+
+// Convenience methods for different HTTP methods
+export const authenticatedApi = {
+  get: <T = unknown>(endpoint: string, options?: RequestInit) =>
+    makeAuthenticatedRequest<T>(endpoint, { ...options, method: "GET" }),
+
+  post: <T = unknown>(
+    endpoint: string,
+    data?: unknown,
+    options?: RequestInit
+  ) =>
+    makeAuthenticatedRequest<T>(endpoint, {
+      ...options,
+      method: "POST",
+      body: data ? JSON.stringify(data) : undefined,
+    }),
+
+  put: <T = unknown>(endpoint: string, data?: unknown, options?: RequestInit) =>
+    makeAuthenticatedRequest<T>(endpoint, {
+      ...options,
+      method: "PUT",
+      body: data ? JSON.stringify(data) : undefined,
+    }),
+
+  patch: <T = unknown>(
+    endpoint: string,
+    data?: unknown,
+    options?: RequestInit
+  ) =>
+    makeAuthenticatedRequest<T>(endpoint, {
+      ...options,
+      method: "PATCH",
+      body: data ? JSON.stringify(data) : undefined,
+    }),
+
+  delete: <T = unknown>(endpoint: string, options?: RequestInit) =>
+    makeAuthenticatedRequest<T>(endpoint, { ...options, method: "DELETE" }),
+};

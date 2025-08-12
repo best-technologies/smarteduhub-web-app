@@ -52,6 +52,7 @@ export const authOptions: NextAuthOptions = {
                 lastName: data.data.last_name,
                 phoneNumber: data.data.phone_number,
                 isEmailVerified: data.data.is_email_verified,
+                accessToken: data.data.access_token || data.access_token,
               };
             }
 
@@ -98,6 +99,7 @@ export const authOptions: NextAuthOptions = {
               lastName: data.data.last_name,
               phoneNumber: data.data.phone_number,
               isEmailVerified: data.data.is_email_verified,
+              accessToken: data.data.access_token || data.access_token,
             };
           }
 
@@ -124,6 +126,7 @@ export const authOptions: NextAuthOptions = {
         token.phoneNumber = user.phoneNumber;
         token.isEmailVerified = user.isEmailVerified;
         token.requiresOtp = user.requiresOtp;
+        token.accessToken = user.accessToken;
       }
       return token;
     },
@@ -137,6 +140,7 @@ export const authOptions: NextAuthOptions = {
         session.user.phoneNumber = token.phoneNumber;
         session.user.isEmailVerified = token.isEmailVerified;
         session.user.requiresOtp = token.requiresOtp;
+        session.user.accessToken = token.accessToken;
       }
       return session;
     },

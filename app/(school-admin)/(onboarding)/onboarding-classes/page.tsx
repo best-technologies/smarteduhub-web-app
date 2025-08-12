@@ -19,6 +19,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  authenticatedApi,
+  AuthenticatedApiError,
+} from "@/lib/api/authenticated";
 
 const classLevels = [
   "JSS1",
@@ -104,40 +108,30 @@ const OnboardClasses = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/onboard-classes`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            class_names: classes,
-          }),
-        }
-      );
+      const response = await authenticatedApi.post("/auth/onboard-classes", {
+        class_names: classes,
+      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            `Error ${response.status}: ${
-              data.error || "Failed to onboard classes"
-            }`
-        );
-      }
-
-      if (data.success) {
+      if (response.success) {
         updateClasses(classes);
         setShowSuccessModal(true);
       } else {
-        throw new Error(data.message || "Failed to onboard classes");
+        throw new AuthenticatedApiError(
+          response.message || "Failed to onboard classes",
+          response.statusCode || 400,
+          response
+        );
       }
-    } catch (error: any) {
-      setErrorMessage(
-        error.message || "An unexpected error occurred. Please try again."
-      );
+    } catch (error: unknown) {
+      if (error instanceof AuthenticatedApiError) {
+        if (error.statusCode === 401) {
+          setErrorMessage("Your session has expired. Please login again.");
+        } else {
+          setErrorMessage(error.message);
+        }
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
       setShowErrorModal(true);
     } finally {
       setIsLoading(false);
@@ -335,8 +329,8 @@ const OnboardClasses = () => {
             </DialogHeader>
             <div className="py-4">
               <p className="text-muted-foreground mb-4">
-                Your classes have been successfully onboarded. Let's move to the
-                next step and add teachers.
+                Your classes have been successfully onboarded. Let&apos;s move
+                to the next step and add teachers.
               </p>
               <Button
                 onClick={handleSuccessModalClose}
