@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Wallet,
   Users,
@@ -27,6 +27,24 @@ import {
 } from "@/lib/api/authenticated";
 
 // Types for API response
+type OngoingClass = {
+  id?: string;
+  class: string;
+  subject: string;
+  teacher: string;
+  from: string;
+  to: string;
+  // Add other properties as they come from API
+};
+
+type NotificationEvent = {
+  id?: string;
+  title: string;
+  date: string;
+  description: string;
+  // Add other properties as they come from API
+};
+
 type DashboardData = {
   basic_details: {
     email: string;
@@ -48,8 +66,8 @@ type DashboardData = {
     totalExpenses: number;
     netBalance: number;
   };
-  ongoingClasses: unknown[];
-  notifications: unknown[];
+  ongoingClasses: OngoingClass[];
+  notifications: NotificationEvent[];
 };
 
 // Skeleton component
@@ -81,72 +99,6 @@ const classFilters = [
   { label: "SS1", value: "SS1" },
   { label: "SS2", value: "SS2" },
   { label: "SS3", value: "SS3" },
-];
-
-const ongoingClassesDemo = [
-  {
-    class: "JSS1A",
-    subject: "Mathematics",
-    teacher: "Mr. Ade",
-    from: "08:00",
-    to: "09:00",
-  },
-  {
-    class: "JSS1B",
-    subject: "English",
-    teacher: "Mrs. Bello",
-    from: "08:00",
-    to: "09:00",
-  },
-  {
-    class: "JSS2A",
-    subject: "Basic Science",
-    teacher: "Mr. Chinedu",
-    from: "09:00",
-    to: "10:00",
-  },
-  {
-    class: "JSS2B",
-    subject: "Social Studies",
-    teacher: "Ms. Grace",
-    from: "09:00",
-    to: "10:00",
-  },
-  {
-    class: "SS1A",
-    subject: "Biology",
-    teacher: "Dr. Musa",
-    from: "10:00",
-    to: "11:00",
-  },
-  {
-    class: "SS2C",
-    subject: "Chemistry",
-    teacher: "Mrs. Okafor",
-    from: "11:00",
-    to: "12:00",
-  },
-  {
-    class: "SS3B",
-    subject: "Physics",
-    teacher: "Mr. Johnson",
-    from: "12:00",
-    to: "01:00",
-  },
-  {
-    class: "JSS3A",
-    subject: "Computer Science",
-    teacher: "Mr. David",
-    from: "13:00",
-    to: "14:00",
-  },
-  {
-    class: "SS1B",
-    subject: "Economics",
-    teacher: "Mrs. Sarah",
-    from: "14:00",
-    to: "15:00",
-  },
 ];
 
 const AdminDashboard = () => {
@@ -211,12 +163,15 @@ const AdminDashboard = () => {
   };
 
   const [classFilter, setClassFilter] = useState("all");
-  const filteredOngoingClasses =
-    classFilter === "all"
-      ? ongoingClassesDemo
-      : ongoingClassesDemo.filter((c) =>
-          c.class.toUpperCase().startsWith(classFilter)
+  const filteredOngoingClasses = useMemo(() => {
+    if (!dashboardData?.ongoingClasses) return [];
+
+    return classFilter === "all"
+      ? dashboardData.ongoingClasses
+      : dashboardData.ongoingClasses.filter((c) =>
+          c.class.toUpperCase().startsWith(classFilter.toUpperCase())
         );
+  }, [dashboardData?.ongoingClasses, classFilter]);
 
   return (
     <div className="py-6 space-y-6 bg-brand-bg">
@@ -398,7 +353,22 @@ const AdminDashboard = () => {
               }}
             >
               <div className="space-y-3">
-                {filteredOngoingClasses.length > 0 ? (
+                {isLoading ? (
+                  // Skeleton loading for ongoing classes
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="relative overflow-hidden p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50 animate-shimmer"></div>
+                      <div className="flex justify-between items-center mb-1">
+                        <div className="h-4 w-16 bg-gray-300 rounded animate-pulse"></div>
+                        <div className="h-3 w-20 bg-gray-300 rounded animate-pulse"></div>
+                      </div>
+                      <div className="h-3 w-32 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ))
+                ) : filteredOngoingClasses.length > 0 ? (
                   filteredOngoingClasses.map((classItem, index) => (
                     <div key={index} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex justify-between items-center mb-1">
@@ -416,8 +386,11 @@ const AdminDashboard = () => {
                   ))
                 ) : (
                   <div className="p-4 text-center text-gray-500">
-                    No ongoing classes for{" "}
-                    {classFilter === "all" ? "all classes" : classFilter}
+                    {dashboardData && dashboardData.ongoingClasses?.length === 0
+                      ? "Create some class schedules to see them here"
+                      : `No ongoing classes for ${
+                          classFilter === "all" ? "all classes" : classFilter
+                        }`}
                   </div>
                 )}
               </div>
@@ -447,33 +420,43 @@ const AdminDashboard = () => {
               }}
             >
               <div className="space-y-4">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold">End of Term Exams</span>
-                    <span className="text-sm text-gray-500">Dec 15</span>
+                {isLoading ? (
+                  // Skeleton loading for upcoming events
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="relative overflow-hidden p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50 animate-shimmer"></div>
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="h-4 w-24 bg-gray-300 rounded animate-pulse"></div>
+                        <div className="h-3 w-12 bg-gray-300 rounded animate-pulse"></div>
+                      </div>
+                      <div className="h-3 w-full bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ))
+                ) : dashboardData?.notifications &&
+                  dashboardData.notifications.length > 0 ? (
+                  dashboardData.notifications.map(
+                    (event: NotificationEvent, index: number) => (
+                      <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-semibold">{event.title}</span>
+                          <span className="text-sm text-gray-500">
+                            {event.date}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          {event.description}
+                        </p>
+                      </div>
+                    )
+                  )
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    Your events will show here
                   </div>
-                  <p className="text-sm text-gray-600">
-                    Final examinations for all classes
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold">Parents Meeting</span>
-                    <span className="text-sm text-gray-500">Dec 20</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Annual parents-teachers meeting
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold">Sports Day</span>
-                    <span className="text-sm text-gray-500">Dec 22</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Annual sports competition
-                  </p>
-                </div>
+                )}
               </div>
             </div>
             <Button
