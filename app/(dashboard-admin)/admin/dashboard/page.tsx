@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Wallet,
   Users,
@@ -9,10 +9,69 @@ import {
   Calendar,
   Clock,
   ChevronRight,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import {
+  authenticatedApi,
+  AuthenticatedApiError,
+} from "@/lib/api/authenticated";
+
+// Types for API response
+type DashboardData = {
+  basic_details: {
+    email: string;
+    school_id: string;
+  };
+  teachers: {
+    totalTeachers: number;
+    activeClasses: number;
+    totalSubjects: number;
+  };
+  students: {
+    totalStudents: number;
+    activeStudents: number;
+    suspendedStudents: number;
+  };
+  finance: {
+    totalRevenue: number;
+    outstandingFees: number;
+    totalExpenses: number;
+    netBalance: number;
+  };
+  ongoingClasses: unknown[];
+  notifications: unknown[];
+};
+
+// Skeleton component
+const SkeletonCard = () => (
+  <Card className="shadow-sm bg-white">
+    <CardContent className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="h-5 bg-gray-200 rounded animate-pulse w-32 shimmer"></div>
+        <div className="h-5 w-5 bg-gray-200 rounded animate-pulse shimmer"></div>
+      </div>
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex justify-between items-center">
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-24 shimmer"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-16 shimmer"></div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 h-9 bg-gray-200 rounded animate-pulse shimmer"></div>
+    </CardContent>
+  </Card>
+);
 
 const classFilters = [
   { label: "All", value: "all" },
@@ -90,43 +149,66 @@ const ongoingClassesDemo = [
   },
 ];
 
-const totalClasses = 16; // Total number of classes in the school
-
 const AdminDashboard = () => {
   const router = useRouter();
 
-  // Demo data
-  const financialOverview = {
-    totalRevenue: 9782000,
-    revenueGrowth: 12,
-    pendingFees: 3245000,
-    expenses: 1325000,
-    cashFlow: 1857000,
+  // State for API data
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
+  // Fetch dashboard data
+  const fetchDashboardData = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await authenticatedApi.get(
+        "/director/dashboard/fetch-dashboard-data"
+      );
+
+      if (response.success) {
+        setDashboardData(response.data as DashboardData);
+      } else {
+        throw new AuthenticatedApiError(
+          response.message || "Failed to fetch dashboard data",
+          response.statusCode || 400,
+          response
+        );
+      }
+    } catch (error: unknown) {
+      let errorMessage =
+        "An unexpected error occurred while loading dashboard data.";
+
+      if (error instanceof AuthenticatedApiError) {
+        if (error.statusCode === 401) {
+          errorMessage = "Your session has expired. Please login again.";
+        } else if (error.statusCode === 403) {
+          errorMessage = "You don't have permission to access this data.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setError(errorMessage);
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const teacherStats = {
-    totalTeachers: 45,
-    activeClasses: 32,
-    subjectsOffered: 16,
-    averageClassSize: 25,
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // Retry mechanism
+  const handleRetry = () => {
+    setShowErrorModal(false);
+    fetchDashboardData();
   };
-
-  const studentStats = {
-    totalStudents: 1350,
-    attendance: 92,
-    performanceAvg: 76,
-    activeClubs: 9,
-  };
-
-  // const subjectDistribution = [
-  //   { name: "Mathematics", value: 20 },
-  //   { name: "Sciences", value: 25 },
-  //   { name: "Languages", value: 20 },
-  //   { name: "Humanities", value: 15 },
-  //   { name: "Technical", value: 20 },
-  // ];
-
-  // const COLORS = ["#3b82f6", "#6366f1", "#8b5cf6", "#a855f7", "#d946ef"];
 
   const [classFilter, setClassFilter] = useState("all");
   const filteredOngoingClasses =
@@ -153,115 +235,132 @@ const AdminDashboard = () => {
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Financial Overview Card */}
-        <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Financial Overview</h3>
-              <Wallet className="h-5 w-5 text-green-500" />
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Total Revenue</span>
-                <span className="font-semibold">
-                  ₦ {financialOverview.totalRevenue.toLocaleString()}
-                </span>
+        {isLoading ? (
+          <SkeletonCard />
+        ) : (
+          <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Financial Overview</h3>
+                <Wallet className="h-5 w-5 text-green-500" />
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Pending Fees</span>
-                <span className="font-semibold text-yellow-600">
-                  ₦ {financialOverview.pendingFees.toLocaleString()}
-                </span>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Revenue</span>
+                  <span className="font-semibold">
+                    ₦{" "}
+                    {dashboardData?.finance.totalRevenue.toLocaleString() ||
+                      "0"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Outstanding Fees</span>
+                  <span className="font-semibold text-yellow-600">
+                    ₦{" "}
+                    {dashboardData?.finance.outstandingFees.toLocaleString() ||
+                      "0"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Net Balance</span>
+                  <span className="font-semibold text-green-600">
+                    ₦{" "}
+                    {dashboardData?.finance.netBalance.toLocaleString() || "0"}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Cash Flow</span>
-                <span className="font-semibold text-green-600">
-                  ₦ {financialOverview.cashFlow.toLocaleString()}
-                </span>
-              </div>
-            </div>
-            <Button
-              variant="link"
-              className="mt-4 w-full justify-between"
-              onClick={() => router.push("/admin/finance")}
-            >
-              View Details <ChevronRight className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
+              <Button
+                variant="link"
+                className="mt-4 w-full justify-between"
+                onClick={() => router.push("/admin/finance")}
+              >
+                View Details <ChevronRight className="h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Teachers Overview Card */}
-        <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Teachers Overview</h3>
-              <Users className="h-5 w-5 text-blue-500" />
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Total Teachers</span>
-                <span className="font-semibold">
-                  {teacherStats.totalTeachers}
-                </span>
+        {isLoading ? (
+          <SkeletonCard />
+        ) : (
+          <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Teachers Overview</h3>
+                <Users className="h-5 w-5 text-blue-500" />
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Active Classes</span>
-                <span className="font-semibold">
-                  {teacherStats.activeClasses}
-                </span>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Teachers</span>
+                  <span className="font-semibold">
+                    {dashboardData?.teachers.totalTeachers || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Active Classes</span>
+                  <span className="font-semibold">
+                    {dashboardData?.teachers.activeClasses || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Subjects</span>
+                  <span className="font-semibold">
+                    {dashboardData?.teachers.totalSubjects || 0}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Subjects Offered</span>
-                <span className="font-semibold">
-                  {teacherStats.subjectsOffered}
-                </span>
-              </div>
-            </div>
-            <Button
-              variant="link"
-              className="mt-4 w-full justify-between"
-              onClick={() => router.push("/admin/teachers")}
-            >
-              View Details <ChevronRight className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
+              <Button
+                variant="link"
+                className="mt-4 w-full justify-between"
+                onClick={() => router.push("/admin/teachers")}
+              >
+                View Details <ChevronRight className="h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Students Overview Card */}
-        <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Students Overview</h3>
-              <GraduationCap className="h-5 w-5 text-purple-500" />
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Total Students</span>
-                <span className="font-semibold">
-                  {studentStats.totalStudents}
-                </span>
+        {isLoading ? (
+          <SkeletonCard />
+        ) : (
+          <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Students Overview</h3>
+                <GraduationCap className="h-5 w-5 text-purple-500" />
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Attendance Rate</span>
-                <span className="font-semibold">
-                  {studentStats.attendance}%
-                </span>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Students</span>
+                  <span className="font-semibold">
+                    {dashboardData?.students.totalStudents || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Active Students</span>
+                  <span className="font-semibold">
+                    {dashboardData?.students.activeStudents || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Suspended Students</span>
+                  <span className="font-semibold">
+                    {dashboardData?.students.suspendedStudents || 0}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Performance Avg</span>
-                <span className="font-semibold">
-                  {studentStats.performanceAvg}%
-                </span>
-              </div>
-            </div>
-            <Button
-              variant="link"
-              className="mt-4 w-full justify-between"
-              onClick={() => router.push("/admin/students")}
-            >
-              View Details <ChevronRight className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
+              <Button
+                variant="link"
+                className="mt-4 w-full justify-between"
+                onClick={() => router.push("/admin/students")}
+              >
+                View Details <ChevronRight className="h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Ongoing Classes */}
@@ -270,15 +369,11 @@ const AdminDashboard = () => {
         <Card className="shadow-sm hover:shadow-md transition-shadow bg-white">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold">Ongoing Classes</h3>
-                <span className="text-sm text-gray-500">
-                  {filteredOngoingClasses.length}/{totalClasses} total classes
-                </span>
-              </div>
-              <BookOpen className="h-5 w-5 text-indigo-500" />
+              <h3 className="text-lg font-semibold">Ongoing Classes</h3>
+              <BookOpen className="h-5 w-5 text-blue-500" />
             </div>
-            {/* Filter Tabs */}
+
+            {/* Class Filter Buttons */}
             <div className="flex gap-2 mb-4">
               {classFilters.map((filter) => (
                 <button
@@ -294,42 +389,46 @@ const AdminDashboard = () => {
                 </button>
               ))}
             </div>
+
             <div
-              className="h-64 overflow-y-scroll pr-2"
+              className="max-h-64 overflow-y-auto"
               style={{
                 scrollbarWidth: "thin",
                 scrollbarColor: "#D1D5DB #F3F4F6",
               }}
             >
-              {filteredOngoingClasses.map((ongoing, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between bg-gray-50 rounded-lg p-3 mb-2"
-                >
-                  <div>
-                    <div className="font-semibold text-brand-primary">
-                      {ongoing.class}
+              <div className="space-y-3">
+                {filteredOngoingClasses.length > 0 ? (
+                  filteredOngoingClasses.map((classItem, index) => (
+                    <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-brand-primary">
+                          {classItem.class}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {classItem.from} - {classItem.to}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        {classItem.subject} - {classItem.teacher}
+                      </p>
                     </div>
-                    <div className="text-sm text-gray-700">
-                      {ongoing.subject}
-                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No ongoing classes for{" "}
+                    {classFilter === "all" ? "all classes" : classFilter}
                   </div>
-                  <div className="flex-1 px-4">
-                    <div className="text-sm text-gray-500">
-                      {ongoing.teacher}
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {ongoing.from} - {ongoing.to}
-                  </div>
-                </div>
-              ))}
-              {filteredOngoingClasses.length === 0 && (
-                <div className="text-center text-gray-400 text-sm mt-8">
-                  No ongoing classes found for this filter.
-                </div>
-              )}
+                )}
+              </div>
             </div>
+            <Button
+              variant="link"
+              className="mt-4 w-full justify-between"
+              onClick={() => router.push("/admin/schedules")}
+            >
+              View Full Schedule <ChevronRight className="h-4 w-4" />
+            </Button>
           </CardContent>
         </Card>
 
@@ -341,7 +440,7 @@ const AdminDashboard = () => {
               <Calendar className="h-5 w-5 text-rose-500" />
             </div>
             <div
-              className="h-64 overflow-y-scroll pr-2"
+              className="max-h-64 overflow-y-auto"
               style={{
                 scrollbarWidth: "thin",
                 scrollbarColor: "#D1D5DB #F3F4F6",
@@ -375,7 +474,6 @@ const AdminDashboard = () => {
                     Annual sports competition
                   </p>
                 </div>
-                {/* Add more events as needed */}
               </div>
             </div>
             <Button
@@ -388,6 +486,34 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Error Modal */}
+      <Dialog open={showErrorModal} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              Failed to Load Dashboard
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <div className="flex gap-3">
+              <Button onClick={handleRetry} className="flex-1 gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </Button>
+              <Button
+                onClick={() => setShowErrorModal(false)}
+                variant="outline"
+                className="flex-1"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
