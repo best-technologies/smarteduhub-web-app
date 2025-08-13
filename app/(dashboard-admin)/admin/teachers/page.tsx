@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -152,9 +153,11 @@ const TeacherAvatar = ({ teacher }: { teacher: ApiTeacher }) => {
   if (teacher.display_picture) {
     return (
       <div className="flex items-center gap-3">
-        <img
+        <Image
           src={teacher.display_picture}
           alt={teacher.name}
+          width={40}
+          height={40}
           className="h-10 w-10 rounded-full object-cover"
         />
         <div className="font-medium">{getDisplayName(teacher.name)}</div>
@@ -186,7 +189,6 @@ const AdminTeachers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [filterSubject, setFilterSubject] = useState<string>("all");
   const [newTeacher, setNewTeacher] = useState<Partial<Teacher>>({
     name: "",
     email: "",
