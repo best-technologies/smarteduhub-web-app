@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -45,6 +45,8 @@ import {
   Upload,
   Clock,
   MoreVertical,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -52,7 +54,37 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  authenticatedApi,
+  AuthenticatedApiError,
+} from "@/lib/api/authenticated";
 
+// API Response Types
+interface ApiTeacher {
+  id: string;
+  name: string;
+  display_picture: string | null;
+  contact: {
+    phone: string;
+    email: string;
+  };
+  totalSubjects: number;
+  classTeacher: string;
+  nextClass: string | null;
+  status: "active" | "inactive";
+}
+
+interface TeachersApiResponse {
+  basic_details: {
+    totalTeachers: number;
+    activeTeachers: number;
+    maleTeachers: number;
+    femaleTeachers: number;
+  };
+  teachers: ApiTeacher[];
+}
+
+// Legacy interface for form/modal usage
 interface Teacher {
   id: string;
   name: string;
@@ -75,56 +107,84 @@ interface Teacher {
   };
 }
 
-const AdminTeachers = () => {
-  const [teachers, setTeachers] = useState<Teacher[]>([
-    {
-      id: "1",
-      name: "Dr. John Smith",
-      email: "john.smith@smartedu.com",
-      phone: "+234 801 234 5678",
-      subjects: ["Mathematics", "Physics"],
-      classes: ["SS1", "SS2", "SS3"],
-      qualification: "Ph.D. in Mathematics",
-      joinDate: "2022-09-01",
-      status: "active",
-      performance: {
-        attendance: 95,
-        studentSatisfaction: 92,
-        classCompletion: 98,
-      },
-      nextClass: {
-        subject: "Physics",
-        class: "SS2A",
-        time: "10:00 AM",
-      },
-    },
-    {
-      id: "2",
-      name: "Mrs. Sarah Johnson",
-      email: "sarah.j@smartedu.com",
-      phone: "+234 802 345 6789",
-      subjects: ["English", "Literature"],
-      classes: ["JS1", "JS2", "JS3"],
-      qualification: "M.A. in English Literature",
-      joinDate: "2021-03-15",
-      status: "active",
-      performance: {
-        attendance: 88,
-        studentSatisfaction: 95,
-        classCompletion: 90,
-      },
-      nextClass: {
-        subject: "English",
-        class: "JS3B",
-        time: "11:30 AM",
-      },
-    },
-    // Add more teachers...
-  ]);
+// Skeleton component
+const SkeletonCard = () => (
+  <Card className="bg-white">
+    <CardContent className="p-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-8 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    </CardContent>
+  </Card>
+);
 
+// Avatar component for teachers
+const TeacherAvatar = ({ teacher }: { teacher: ApiTeacher }) => {
+  const capitalizeWord = (word: string) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  };
+
+  const getInitials = (name: string) => {
+    const names = name.split(" ").map(capitalizeWord);
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return names[0][0].toUpperCase();
+  };
+
+  const getDisplayName = (name: string) => {
+    const names = name.split(" ").map(capitalizeWord);
+    if (names.length >= 2) {
+      const lastName = names[names.length - 1];
+      const initials = names
+        .slice(0, -1)
+        .map((n) => n[0])
+        .join(".");
+      return `${lastName} ${initials}.`;
+    }
+    return names[0];
+  };
+
+  if (teacher.display_picture) {
+    return (
+      <div className="flex items-center gap-3">
+        <img
+          src={teacher.display_picture}
+          alt={teacher.name}
+          className="h-10 w-10 rounded-full object-cover"
+        />
+        <div className="font-medium">{getDisplayName(teacher.name)}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
+        {getInitials(teacher.name)}
+      </div>
+      <div className="font-medium">{getDisplayName(teacher.name)}</div>
+    </div>
+  );
+};
+
+const AdminTeachers = () => {
+  // API State
+  const [teachersData, setTeachersData] = useState<TeachersApiResponse | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
+  // Legacy state for modal/form functionality
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  // const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterSubject, setFilterSubject] = useState<string>("all");
   const [newTeacher, setNewTeacher] = useState<Partial<Teacher>>({
@@ -137,17 +197,59 @@ const AdminTeachers = () => {
     status: "active",
   });
 
-  // Calculate statistics
-  const totalTeachers = teachers.length;
-  const activeTeachers = teachers.filter((t) => t.status === "active").length;
-  const averageAttendance = Math.round(
-    teachers.reduce((acc, t) => acc + t.performance.attendance, 0) /
-      teachers.length
-  );
-  const averageSatisfaction = Math.round(
-    teachers.reduce((acc, t) => acc + t.performance.studentSatisfaction, 0) /
-      teachers.length
-  );
+  // Fetch teachers data from API
+  const fetchTeachersData = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await authenticatedApi.get(
+        "/director/teachers/dashboard"
+      );
+
+      if (response.success) {
+        setTeachersData(response.data as TeachersApiResponse);
+      } else {
+        throw new AuthenticatedApiError(
+          response.message || "Failed to fetch teachers data",
+          response.statusCode || 400,
+          response
+        );
+      }
+    } catch (error: unknown) {
+      let errorMessage =
+        "An unexpected error occurred while loading teachers data.";
+
+      if (error instanceof AuthenticatedApiError) {
+        if (error.statusCode === 401) {
+          errorMessage = "Your session has expired. Please login again.";
+        } else if (error.statusCode === 403) {
+          errorMessage = "You don't have permission to access this data.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setError(errorMessage);
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchTeachersData();
+  }, []);
+
+  // Retry mechanism
+  const handleRetry = () => {
+    setShowErrorModal(false);
+    fetchTeachersData();
+  };
+
+  // Calculate statistics from API data
+  const totalTeachers = teachersData?.basic_details.totalTeachers || 0;
+  const activeTeachers = teachersData?.basic_details.activeTeachers || 0;
 
   const handleAddTeacher = () => {
     const { ...restNewTeacher } = newTeacher as Teacher;
@@ -185,15 +287,13 @@ const AdminTeachers = () => {
   //   setTeachers(teachers.filter((teacher) => teacher.id !== id));
   // };
 
-  const filteredTeachers = teachers.filter((teacher) => {
+  const filteredTeachers = (teachersData?.teachers || []).filter((teacher) => {
     const matchesSearch =
       teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      teacher.email.toLowerCase().includes(searchQuery.toLowerCase());
+      teacher.contact.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus =
       filterStatus === "all" || teacher.status === filterStatus;
-    const matchesSubject =
-      filterSubject === "all" || teacher.subjects.includes(filterSubject);
-    return matchesSearch && matchesStatus && matchesSubject;
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -211,50 +311,42 @@ const AdminTeachers = () => {
       </div>
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Total Teachers</p>
-                <h3 className="text-2xl font-bold">{totalTeachers}</h3>
-              </div>
-              <Users className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Active Teachers</p>
-                <h3 className="text-2xl font-bold">{activeTeachers}</h3>
-              </div>
-              <BookOpen className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Avg. Attendance</p>
-                <h3 className="text-2xl font-bold">{averageAttendance}%</h3>
-              </div>
-              <Calendar className="h-8 w-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Student Satisfaction</p>
-                <h3 className="text-2xl font-bold">{averageSatisfaction}%</h3>
-              </div>
-              <BarChart2 className="h-8 w-8 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
+        {isLoading ? (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <div></div> {/* Empty space for removed card */}
+            <div></div> {/* Empty space for removed card */}
+          </>
+        ) : (
+          <>
+            <Card className="bg-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Total Teachers</p>
+                    <h3 className="text-2xl font-bold">{totalTeachers}</h3>
+                  </div>
+                  <Users className="h-8 w-8 text-blue-500" />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500">Active Teachers</p>
+                    <h3 className="text-2xl font-bold">{activeTeachers}</h3>
+                  </div>
+                  <BookOpen className="h-8 w-8 text-green-500" />
+                </div>
+              </CardContent>
+            </Card>
+            <div></div> {/* Empty space for removed Avg. Attendance card */}
+            <div></div>{" "}
+            {/* Empty space for removed Student Satisfaction card */}
+          </>
+        )}
       </div>
 
       {/* Header with Actions */}
@@ -277,18 +369,6 @@ const AdminTeachers = () => {
               <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterSubject} onValueChange={setFilterSubject}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Subject" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Subjects</SelectItem>
-              <SelectItem value="Mathematics">Mathematics</SelectItem>
-              <SelectItem value="Physics">Physics</SelectItem>
-              <SelectItem value="English">English</SelectItem>
-              <SelectItem value="Literature">Literature</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -393,128 +473,166 @@ const AdminTeachers = () => {
                 <TableHead>Contact</TableHead>
                 <TableHead>Subjects</TableHead>
                 <TableHead>Classes</TableHead>
-                <TableHead>Performance</TableHead>
                 <TableHead>Next Class</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredTeachers.map((teacher) => (
-                <TableRow key={teacher.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{teacher.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {teacher.qualification}
+              {isLoading ? (
+                // Skeleton rows for table
+                Array.from({ length: 5 }).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+                        <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center text-sm">
-                        <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                        {teacher.email}
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-2">
+                        <div className="h-3 w-40 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
                       </div>
-                      <div className="flex items-center text-sm">
-                        <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                        {teacher.phone}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {teacher.subjects.map((subject) => (
-                        <Badge key={subject} variant="secondary">
-                          {subject}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {teacher.classes.map((class_) => (
-                        <Badge key={class_} variant="outline">
-                          {class_}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center text-sm">
-                        <span className="w-24">Attendance:</span>
-                        <span className="font-medium">
-                          {teacher.performance.attendance}%
-                        </span>
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <span className="w-24">Satisfaction:</span>
-                        <span className="font-medium">
-                          {teacher.performance.studentSatisfaction}%
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {teacher.nextClass && (
-                      <div className="text-sm">
-                        <div className="font-medium">
-                          {teacher.nextClass.subject}
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-6 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-3 w-16 bg-gray-200 rounded animate-pulse"></div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-3 w-20 bg-gray-200 rounded animate-pulse"></div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="h-8 w-8 bg-gray-200 rounded animate-pulse ml-auto"></div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : filteredTeachers.length > 0 ? (
+                filteredTeachers.map((teacher) => (
+                  <TableRow key={teacher.id}>
+                    <TableCell>
+                      <TeacherAvatar teacher={teacher} />
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        <div className="flex items-center text-sm">
+                          <Mail className="h-4 w-4 mr-2 text-gray-400" />
+                          {teacher.contact.email}
                         </div>
-                        <div className="text-gray-500">
-                          {teacher.nextClass.class}
-                        </div>
-                        <div className="text-gray-400">
-                          {teacher.nextClass.time}
+                        <div className="flex items-center text-sm">
+                          <Phone className="h-4 w-4 mr-2 text-gray-400" />
+                          {teacher.contact.phone}
                         </div>
                       </div>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        teacher.status === "active"
-                          ? "secondary"
-                          : "destructive"
-                      }
-                    >
-                      {teacher.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Pencil className="h-4 w-4 mr-2" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Calendar className="h-4 w-4 mr-2" />
-                          View Schedule
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <BarChart2 className="h-4 w-4 mr-2" />
-                          View Performance
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className="border-gray-300 text-gray-700"
+                      >
+                        {teacher.totalSubjects}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm">
+                        {teacher.classTeacher !== "None"
+                          ? teacher.classTeacher
+                          : ""}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm">{teacher.nextClass || ""}</span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          teacher.status === "active" ? "secondary" : "outline"
+                        }
+                        className={
+                          teacher.status === "active"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-yellow-100 text-yellow-800 border-yellow-300"
+                        }
+                      >
+                        {teacher.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Calendar className="h-4 w-4 mr-2" />
+                            View Schedule
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <BarChart2 className="h-4 w-4 mr-2" />
+                            View Performance
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-8 text-gray-500"
+                  >
+                    No teachers found matching your criteria
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      {/* Error Modal */}
+      <Dialog open={showErrorModal} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              Failed to Load Teachers Data
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <div className="flex gap-3">
+              <Button onClick={handleRetry} className="flex-1 gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </Button>
+              <Button
+                onClick={() => setShowErrorModal(false)}
+                variant="outline"
+                className="flex-1"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
