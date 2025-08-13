@@ -42,13 +42,19 @@ export async function makeAuthenticatedRequest<T = unknown>(
     };
 
     // Make the API request
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
-      {
-        ...options,
-        headers,
-      }
-    );
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    if (!baseUrl) {
+      throw new AuthenticatedApiError(
+        "Backend URL not configured. Please check your environment variables.",
+        500
+      );
+    }
+
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+      ...options,
+      headers,
+    });
 
     const data = await response.json();
 
