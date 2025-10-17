@@ -19,23 +19,6 @@ export default function FeatureHighlight({
   features,
   accentColor = "blue",
 }: FeatureHighlightProps) {
-  const colorClasses = {
-    blue: "text-blue-600",
-    purple: "text-purple-600",
-    green: "text-green-600",
-    indigo: "text-indigo-600",
-  };
-
-  const bgColorClasses = {
-    blue: "bg-blue-50",
-    purple: "bg-purple-50",
-    green: "bg-green-50",
-    indigo: "bg-indigo-50",
-  };
-
-  const textColor = colorClasses[accentColor];
-  const bgColor = bgColorClasses[accentColor];
-
   return (
     <section className="py-20 lg:py-28 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -62,9 +45,7 @@ export default function FeatureHighlight({
                     </div>
                   </div>
                   {/* Decorative Background */}
-                  <div
-                    className={`absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] ${bgColor} rounded-3xl`}
-                  />
+                  <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-[#F0F3FF] rounded-3xl" />
                 </div>
 
                 {/* Content */}
@@ -85,9 +66,7 @@ export default function FeatureHighlight({
                   <ul className="space-y-4">
                     {feature.benefits.map((benefit, benefitIndex) => (
                       <li key={benefitIndex} className="flex items-start gap-3">
-                        <CheckCircle
-                          className={`w-6 h-6 ${textColor} flex-shrink-0 mt-0.5`}
-                        />
+                        <CheckCircle className="w-6 h-6 text-brand-primary flex-shrink-0 mt-0.5" />
                         <span className="text-[16px] text-brand-secondary">
                           {benefit}
                         </span>

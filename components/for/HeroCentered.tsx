@@ -22,8 +22,6 @@ export default function HeroCentered({
   imageAlt,
   targetAudience,
 }: HeroCenteredProps) {
-  const accentColor = targetAudience === "parents" ? "green" : "indigo";
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#F0F3FF] via-white to-gray-50 py-20 lg:py-32">
       <div className="container mx-auto px-4">
@@ -41,11 +39,7 @@ export default function HeroCentered({
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className={`${
-                accentColor === "green"
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-indigo-600 hover:bg-indigo-700"
-              } text-white px-8 py-6 text-lg group`}
+              className="bg-brand-primary hover:bg-brand-primary-hover text-white px-8 py-6 text-lg group"
             >
               {ctaPrimaryText}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -63,9 +57,7 @@ export default function HeroCentered({
           <div className="flex flex-wrap items-center justify-center gap-8 pt-4">
             <div className="flex items-center gap-2">
               <svg
-                className={`w-5 h-5 ${
-                  accentColor === "green" ? "text-green-600" : "text-indigo-600"
-                }`}
+                className="w-5 h-5 text-brand-primary"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -79,9 +71,7 @@ export default function HeroCentered({
             </div>
             <div className="flex items-center gap-2">
               <svg
-                className={`w-5 h-5 ${
-                  accentColor === "green" ? "text-green-600" : "text-indigo-600"
-                }`}
+                className="w-5 h-5 text-brand-primary"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -95,9 +85,7 @@ export default function HeroCentered({
             </div>
             <div className="flex items-center gap-2">
               <svg
-                className={`w-5 h-5 ${
-                  accentColor === "green" ? "text-green-600" : "text-indigo-600"
-                }`}
+                className="w-5 h-5 text-brand-primary"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -127,26 +115,14 @@ export default function HeroCentered({
           </div>
 
           {/* Decorative Elements */}
-          <div
-            className={`absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] ${
-              accentColor === "green" ? "bg-green-100" : "bg-indigo-100"
-            } rounded-full blur-3xl opacity-30`}
-          />
+          <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-[#E0E7FF] rounded-full blur-3xl opacity-30" />
 
           {/* Floating Cards */}
           <div className="hidden lg:block absolute -left-8 top-1/4 bg-white p-4 rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center gap-3">
-              <div
-                className={`w-12 h-12 ${
-                  accentColor === "green" ? "bg-green-100" : "bg-indigo-100"
-                } rounded-full flex items-center justify-center`}
-              >
+              <div className="w-12 h-12 bg-[#E0E7FF] rounded-full flex items-center justify-center">
                 <svg
-                  className={`w-6 h-6 ${
-                    accentColor === "green"
-                      ? "text-green-600"
-                      : "text-indigo-600"
-                  }`}
+                  className="w-6 h-6 text-brand-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -170,17 +146,9 @@ export default function HeroCentered({
 
           <div className="hidden lg:block absolute -right-8 bottom-1/4 bg-white p-4 rounded-lg shadow-lg border border-gray-100">
             <div className="flex items-center gap-3">
-              <div
-                className={`w-12 h-12 ${
-                  accentColor === "green" ? "bg-green-100" : "bg-indigo-100"
-                } rounded-full flex items-center justify-center`}
-              >
+              <div className="w-12 h-12 bg-[#E0E7FF] rounded-full flex items-center justify-center">
                 <svg
-                  className={`w-6 h-6 ${
-                    accentColor === "green"
-                      ? "text-green-600"
-                      : "text-indigo-600"
-                  }`}
+                  className="w-6 h-6 text-brand-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

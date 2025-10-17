@@ -17,37 +17,10 @@ export default function CTASection({
   secondaryButtonText = "Contact Sales",
   accentColor = "blue",
 }: CTASectionProps) {
-  const colorClasses = {
-    blue: {
-      bg: "bg-blue-600",
-      hover: "hover:bg-blue-700",
-      gradient: "from-blue-600 to-blue-700",
-    },
-    purple: {
-      bg: "bg-purple-600",
-      hover: "hover:bg-purple-700",
-      gradient: "from-purple-600 to-purple-700",
-    },
-    green: {
-      bg: "bg-green-600",
-      hover: "hover:bg-green-700",
-      gradient: "from-green-600 to-green-700",
-    },
-    indigo: {
-      bg: "bg-indigo-600",
-      hover: "hover:bg-indigo-700",
-      gradient: "from-indigo-600 to-indigo-700",
-    },
-  };
-
-  const colors = colorClasses[accentColor];
-
   return (
     <section className="py-20 lg:py-28 bg-white">
       <div className="container mx-auto px-4">
-        <div
-          className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${colors.gradient} p-12 lg:p-16 text-white`}
-        >
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-primary to-brand-primary-hover p-12 lg:p-16 text-white">
           {/* Decorative Elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-white opacity-5 rounded-full translate-y-1/2 -translate-x-1/2" />

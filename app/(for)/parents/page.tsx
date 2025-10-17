@@ -135,19 +135,17 @@ export default function ParentsHomepage() {
 
       <FeatureGrid
         features={features}
-        accentColor="green"
         title="Everything You Need to Support Your Child"
         subtitle="Stay informed, stay connected, and stay involved in your child's education"
       />
 
-      <FeatureHighlight features={highlightFeatures} accentColor="green" />
+      <FeatureHighlight features={highlightFeatures} />
 
       <CTASection
         title="Be the Supportive Parent Your Child Needs"
         subtitle="Join thousands of parents using SmartEduHub to stay actively engaged in their children's education. Sign up free today."
         primaryButtonText="Get Started Now"
         secondaryButtonText="Learn More"
-        accentColor="green"
       />
 
       <Footer />

@@ -135,19 +135,17 @@ export default function StudentsHomepage() {
 
       <FeatureGrid
         features={features}
-        accentColor="indigo"
         title="Built for Modern Students"
         subtitle="Everything you need to excel in your studies, all in one place"
       />
 
-      <FeatureHighlight features={highlightFeatures} accentColor="indigo" />
+      <FeatureHighlight features={highlightFeatures} />
 
       <CTASection
         title="Ready to Level Up Your Learning?"
         subtitle="Join millions of students already achieving more with SmartEduHub. Start your journey to academic excellence today - it's completely free!"
         primaryButtonText="Sign Up Free"
         secondaryButtonText="Watch Tutorial"
-        accentColor="indigo"
       />
 
       <Footer />

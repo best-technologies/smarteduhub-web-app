@@ -135,19 +135,17 @@ export default function TeachersHomepage() {
 
       <FeatureGrid
         features={features}
-        accentColor="purple"
         title="Tools Designed for Educators"
         subtitle="Everything you need to manage your classroom efficiently and effectively"
       />
 
-      <FeatureHighlight features={highlightFeatures} accentColor="purple" />
+      <FeatureHighlight features={highlightFeatures} />
 
       <CTASection
         title="Join Thousands of Teachers Already Using SmartEduHub"
         subtitle="Start your free 30-day trial today. No credit card required. Experience the difference that smart tools can make in your teaching."
         primaryButtonText="Get Started Free"
         secondaryButtonText="Book a Walkthrough"
-        accentColor="purple"
       />
 
       <Footer />

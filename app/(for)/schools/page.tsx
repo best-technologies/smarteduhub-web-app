@@ -135,19 +135,17 @@ export default function SchoolsHomepage() {
 
       <FeatureGrid
         features={features}
-        accentColor="blue"
         title="Everything Your School Needs"
         subtitle="Comprehensive tools to manage every aspect of your educational institution"
       />
 
-      <FeatureHighlight features={highlightFeatures} accentColor="blue" />
+      <FeatureHighlight features={highlightFeatures} />
 
       <CTASection
         title="Ready to Transform Your School?"
         subtitle="Join hundreds of institutions already using SmartEduHub to streamline operations and improve student outcomes."
         primaryButtonText="Schedule a Demo"
         secondaryButtonText="Talk to Sales"
-        accentColor="blue"
       />
 
       <Footer />

@@ -22,8 +22,6 @@ export default function HeroWithLaptop({
   imageAlt,
   targetAudience,
 }: HeroWithLaptopProps) {
-  const accentColor = targetAudience === "schools" ? "blue" : "purple";
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#F0F3FF] to-white py-20 lg:py-32">
       <div className="container mx-auto px-4">
@@ -42,11 +40,7 @@ export default function HeroWithLaptop({
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
                 size="lg"
-                className={`${
-                  accentColor === "blue"
-                    ? "bg-blue-600 hover:bg-blue-700"
-                    : "bg-purple-600 hover:bg-purple-700"
-                } text-white px-8 py-6 text-lg group`}
+                className="bg-brand-primary hover:bg-brand-primary-hover text-white px-8 py-6 text-lg group"
               >
                 {ctaPrimaryText}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -109,11 +103,7 @@ export default function HeroWithLaptop({
             </div>
 
             {/* Decorative Elements */}
-            <div
-              className={`absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] ${
-                accentColor === "blue" ? "bg-blue-100" : "bg-purple-100"
-              } rounded-full blur-3xl opacity-30`}
-            />
+            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#E0E7FF] rounded-full blur-3xl opacity-30" />
           </div>
         </div>
       </div>

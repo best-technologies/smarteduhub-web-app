@@ -20,31 +20,6 @@ export default function FeatureGrid({
   title = "Powerful Features",
   subtitle = "Everything you need to succeed",
 }: FeatureGridProps) {
-  const colorClasses = {
-    blue: {
-      bg: "bg-blue-100",
-      text: "text-blue-600",
-      border: "border-blue-200",
-    },
-    purple: {
-      bg: "bg-purple-100",
-      text: "text-purple-600",
-      border: "border-purple-200",
-    },
-    green: {
-      bg: "bg-green-100",
-      text: "text-green-600",
-      border: "border-green-200",
-    },
-    indigo: {
-      bg: "bg-indigo-100",
-      text: "text-indigo-600",
-      border: "border-indigo-200",
-    },
-  };
-
-  const colors = colorClasses[accentColor];
-
   return (
     <section className="py-20 lg:py-28 bg-white">
       <div className="container mx-auto px-4">
@@ -65,9 +40,7 @@ export default function FeatureGrid({
                 key={index}
                 className="group p-6 rounded-md border-2 border-brand-border hover:shadow-lg transition-all duration-500 bg-white shadow-brand"
               >
-                <div
-                  className={`w-14 h-14 ${colors.bg} ${colors.text} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
-                >
+                <div className="w-14 h-14 bg-[#E0E7FF] text-brand-primary rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Icon className="w-[34px] h-[34px]" />
                 </div>
                 <h3 className="text-[18px] font-semibold text-brand-heading mb-2">
