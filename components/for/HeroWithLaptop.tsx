@@ -1,0 +1,122 @@
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+
+interface HeroWithLaptopProps {
+  title: string;
+  subtitle: string;
+  ctaPrimaryText?: string;
+  ctaSecondaryText?: string;
+  imageSrc: string;
+  imageAlt: string;
+  targetAudience: "schools" | "teachers";
+}
+
+export default function HeroWithLaptop({
+  title,
+  subtitle,
+  ctaPrimaryText = "Get Started",
+  ctaSecondaryText = "Request Demo",
+  imageSrc,
+  imageAlt,
+  targetAudience,
+}: HeroWithLaptopProps) {
+  const accentColor = targetAudience === "schools" ? "blue" : "purple";
+
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#F0F3FF] to-white py-20 lg:py-32">
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left Content */}
+          <div className="space-y-8 text-center lg:text-left">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                {title}
+              </h1>
+              <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
+                {subtitle}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Button
+                size="lg"
+                className={`${
+                  accentColor === "blue"
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-purple-600 hover:bg-purple-700"
+                } text-white px-8 py-6 text-lg group`}
+              >
+                {ctaPrimaryText}
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8 py-6 text-lg border-2"
+              >
+                {ctaSecondaryText}
+              </Button>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 pt-4 justify-center lg:justify-start">
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600 ml-2">
+                  Trusted by 500+ institutions
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Content - Laptop Mockup */}
+          <div className="relative">
+            <div className="relative rounded-lg overflow-hidden shadow-2xl">
+              {/* Laptop Frame */}
+              <div className="bg-gray-900 rounded-t-lg p-2">
+                <div className="bg-gray-800 rounded-t-lg p-1">
+                  {/* Browser Chrome */}
+                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-700 rounded-t-lg">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                      <div className="w-3 h-3 rounded-full bg-green-500" />
+                    </div>
+                  </div>
+                  {/* Screen Content */}
+                  <div className="bg-white relative aspect-[16/10]">
+                    <Image
+                      src={imageSrc}
+                      alt={imageAlt}
+                      fill
+                      className="object-cover object-top"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Laptop Base */}
+              <div className="bg-gray-800 h-4 rounded-b-lg shadow-lg" />
+            </div>
+
+            {/* Decorative Elements */}
+            <div
+              className={`absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] ${
+                accentColor === "blue" ? "bg-blue-100" : "bg-purple-100"
+              } rounded-full blur-3xl opacity-30`}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
