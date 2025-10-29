@@ -1,5 +1,6 @@
 import React from "react";
 import { LucideIcon } from "lucide-react";
+import DetachedCard from "@/components/ui/DetachedCard";
 
 export interface Feature {
   icon: LucideIcon;
@@ -18,6 +19,32 @@ export default function FeatureGrid({
   title = "Powerful Features",
   subtitle = "Everything you need to succeed",
 }: FeatureGridProps) {
+  // Array of unique gradient colors for each card's icon
+  const iconColors = [
+    "bg-gradient-to-br from-purple-500 to-purple-600",
+    "bg-gradient-to-br from-blue-500 to-blue-600",
+    "bg-gradient-to-br from-green-500 to-green-600",
+    "bg-gradient-to-br from-orange-500 to-orange-600",
+    "bg-gradient-to-br from-pink-500 to-pink-600",
+    "bg-gradient-to-br from-teal-500 to-teal-600",
+    "bg-gradient-to-br from-indigo-500 to-indigo-600",
+    "bg-gradient-to-br from-red-500 to-red-600",
+    "bg-gradient-to-br from-cyan-500 to-cyan-600",
+  ];
+
+  // Border colors to match
+  const borderColors = [
+    "#8B5CF6", // purple
+    "#3B82F6", // blue
+    "#10B981", // green
+    "#F97316", // orange
+    "#EC4899", // pink
+    "#14B8A6", // teal
+    "#6366F1", // indigo
+    "#EF4444", // red
+    "#06B6D4", // cyan
+  ];
+
   return (
     <section className="py-20 lg:py-28 bg-white">
       <div className="container mx-auto px-4">
@@ -31,25 +58,16 @@ export default function FeatureGrid({
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <div
-                key={index}
-                className="group p-6 rounded-md border-2 border-brand-border hover:shadow-lg transition-all duration-500 bg-white shadow-brand"
-              >
-                <div className="w-14 h-14 bg-[#E0E7FF] text-brand-primary rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Icon className="w-[34px] h-[34px]" />
-                </div>
-                <h3 className="text-[18px] font-semibold text-brand-heading mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-[16px] font-normal text-brand-secondary leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            );
-          })}
+          {features.map((feature, index) => (
+            <DetachedCard
+              key={index}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+              borderColor={borderColors[index % borderColors.length]}
+              iconBgColor={iconColors[index % iconColors.length]}
+            />
+          ))}
         </div>
       </div>
     </section>

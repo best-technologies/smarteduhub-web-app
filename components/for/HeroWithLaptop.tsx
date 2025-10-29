@@ -21,7 +21,7 @@ export default function HeroWithLaptop({
   imageAlt,
 }: HeroWithLaptopProps) {
   return (
-    <section className="relative overflow-hidden bg-white py-16">
+    <section className="relative overflow-hidden bg-white pt-16 pb-32">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto relative">
           {/* Wire-mesh SVG Background - lowest layer */}
