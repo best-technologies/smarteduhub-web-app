@@ -8,6 +8,7 @@ import FeatureHighlight, {
 } from "@/components/for/FeatureHighlight";
 import CTASection from "@/components/for/CTASection";
 import TabbedFeatureSection from "@/components/for/TabbedFeatureSection";
+import MobileAppSection from "@/components/for/MobileAppSection";
 
 // --- IGNORE if card is commented out ---
 // import {
@@ -146,6 +147,8 @@ export default function SchoolsHomepage() {
       {/* <FeatureHighlight features={highlightFeatures} /> */}
 
       <TabbedFeatureSection />
+
+      <MobileAppSection />
 
       <CTASection
         title="Ready to Transform Your School?"
