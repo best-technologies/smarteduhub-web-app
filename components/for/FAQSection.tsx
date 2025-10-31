@@ -55,8 +55,8 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categories }) => {
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-gray-600">
-            Find answers to common questions about SmartEduHub. Can't find what
-            you're looking for? Contact our support team.
+            Find answers to common questions about SmartEduHub. Can&apos;t find
+            what you&apos;re looking for? Contact our support team.
           </p>
         </div>
 
@@ -98,7 +98,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categories }) => {
             ) : (
               <div className="px-6 py-12 text-center">
                 <p className="text-gray-500">
-                  No results found for "{searchTerm}" in the{" "}
+                  No results found for &quot;{searchTerm}&quot; in the{" "}
                   {
                     categoryTabs.find((c) => c.slug === activeCategorySlug)
                       ?.category

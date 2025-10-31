@@ -3,8 +3,6 @@ import Navigation from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
 import HeroWithLaptop from "@/components/for/HeroWithLaptop";
 import FeatureGrid from "@/components/for/FeatureGrid";
-import FeatureHighlight from "@/components/for/FeatureHighlight";
-import CTASection from "@/components/for/CTASection";
 import TabbedFeatureSection from "@/components/for/TabbedFeatureSection";
 import MobileAppSection from "@/components/for/MobileAppSection";
 import FAQSection from "@/components/for/FAQSection";
