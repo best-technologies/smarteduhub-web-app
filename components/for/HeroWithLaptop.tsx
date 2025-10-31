@@ -2,12 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import ScrollLink from "@/components/ui/ScrollLink";
 
 interface HeroWithLaptopProps {
   title: string;
   subtitle: string;
-  ctaPrimaryText?: string;
   ctaSecondaryText?: string;
+  ctaSecondaryHref?: string;
   imageSrc: string;
   imageAlt: string;
 }
@@ -15,8 +16,8 @@ interface HeroWithLaptopProps {
 export default function HeroWithLaptop({
   title,
   subtitle,
-  ctaPrimaryText = "Get Started",
-  ctaSecondaryText = "Request Demo",
+  ctaSecondaryText = "Explore Features",
+  ctaSecondaryHref = "#features",
   imageSrc,
   imageAlt,
 }: HeroWithLaptopProps) {
@@ -52,28 +53,15 @@ export default function HeroWithLaptop({
 
           {/* CTA Section */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 relative z-10">
-            <Button size="lg">{ctaPrimaryText}</Button>
-
-            {/* Social Proof */}
-            {/* <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 border-2 border-white flex items-center justify-center text-white text-sm font-bold"
-                  >
-                    {String.fromCharCode(64 + i)}
-                  </div>
-                ))}
-              </div>
-              <span className="text-gray-300 font-medium">
-                Trusted by 100+ schools
-              </span>
-            </div> */}
+            {ctaSecondaryText && ctaSecondaryHref && (
+              <ScrollLink href={ctaSecondaryHref}>
+                <Button size="lg" variant="outline">
+                  {ctaSecondaryText}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </ScrollLink>
+            )}
           </div>
-
-          {/* Cancel Anytime */}
-          {/* <p className="text-gray-400 text-sm mb-16">Cancel Anytime</p> */}
 
           {/* Product Mockup */}
           <div className="relative max-w-6xl mx-auto">

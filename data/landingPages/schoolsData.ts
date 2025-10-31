@@ -17,8 +17,8 @@ export const schoolsData: LandingPageData = {
     title: "AI powered platform for Your School",
     subtitle:
       "Transform your school with an all-in-one platform. Built-in AI personalizes learning, automates administrative workflows, and provides predictive insights to drive student success.",
-    ctaPrimaryText: "Request a Demo",
-    ctaSecondaryText: "View Pricing",
+    ctaSecondaryText: "Explore Features",
+    ctaSecondaryHref: "#features",
     imageSrc: "/svgs/schools-hero-dashboard.svg",
     imageAlt: "Headmaster addressing pupils",
   },

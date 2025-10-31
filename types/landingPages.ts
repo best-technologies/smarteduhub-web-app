@@ -4,8 +4,8 @@ import { LucideIcon } from "lucide-react";
 export interface HeroData {
   title: string;
   subtitle: string;
-  ctaPrimaryText?: string;
   ctaSecondaryText?: string;
+  ctaSecondaryHref?: string;
   imageSrc: string;
   imageAlt: string;
   type: "laptop" | "centered";

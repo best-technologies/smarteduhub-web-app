@@ -21,8 +21,8 @@ export const teachersData: LandingPageData = {
     title: "Teaching Made Simple, Impact Amplified",
     subtitle:
       "Spend less time on administrative tasks and more time inspiring students. Our platform handles the paperwork so you can focus on what matters most.",
-    ctaPrimaryText: "Start Free Trial",
-    ctaSecondaryText: "Watch Demo",
+    ctaSecondaryText: "Explore Features",
+    ctaSecondaryHref: "#features",
     imageSrc: "/svgs/teacher-dashboard.svg",
     imageAlt: "Teacher dashboard preview",
   },

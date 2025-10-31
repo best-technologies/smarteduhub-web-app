@@ -20,7 +20,7 @@ export default function TabbedFeatureSection({
   const activeContent = tabs.find((tab) => tab.id === activeTab) || tabs[0];
 
   return (
-    <section className="py-20 lg:py-28 bg-white">
+    <section id="features" className="py-20 lg:py-28 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Heading */}
         <div className="text-center mb-12 lg:mb-16">

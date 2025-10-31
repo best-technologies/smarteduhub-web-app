@@ -20,8 +20,8 @@ export const studentsData: LandingPageData = {
     title: "Learn Smarter, Not Harder",
     subtitle:
       "Your all-in-one platform for assignments, grades, resources, and personalized learning support. Take control of your academic journey.",
-    ctaPrimaryText: "Start Learning Free",
     ctaSecondaryText: "Explore Features",
+    ctaSecondaryHref: "#features",
     imageSrc: "/svgs/parent-student-dashboard.svg",
     imageAlt: "Student learning platform",
   },

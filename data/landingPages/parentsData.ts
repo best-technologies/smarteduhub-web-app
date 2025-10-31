@@ -19,8 +19,8 @@ export const parentsData: LandingPageData = {
     title: "Stay Connected to Your Child's Learning Journey",
     subtitle:
       "Empower your involvement with real-time insights, seamless communication, and all the tools you need to support your child's success.",
-    ctaPrimaryText: "Create Free Account",
-    ctaSecondaryText: "See How It Works",
+    ctaSecondaryText: "Explore Features",
+    ctaSecondaryHref: "#features",
     imageSrc: "/svgs/parent-student-dashboard.svg",
     imageAlt: "Parent portal dashboard",
   },
