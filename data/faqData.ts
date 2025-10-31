@@ -49,9 +49,9 @@ export const faqData: FAQCategory[] = [
       },
       {
         id: 5,
-        question: "Does the platform support virtual classrooms?",
+        question: "What reporting and analytics features are available?",
         answer:
-          "Absolutely. SmartEduHub includes integrated video conferencing, screen sharing, breakout rooms, and collaborative whiteboards for seamless virtual learning experiences.",
+          "SmartEduHub provides comprehensive dashboards with real-time insights on student performance, attendance trends, grade distributions, and engagement metrics. Export custom reports in multiple formats.",
       },
       {
         id: 6,
@@ -69,7 +69,7 @@ export const faqData: FAQCategory[] = [
         id: 7,
         question: "How is student data protected?",
         answer:
-          "We use bank-level encryption, comply with FERPA and GDPR standards, and implement role-based access controls. All data is stored in secure, geo-redundant data centers with regular security audits.",
+          "We use bank-level encryption, comply with the Nigeria Data Protection Commission (NDPC) and the National Human Rights Commission of Nigeria (NHRC) standards, and implement role-based access controls. All data is stored in secure, geo-redundant data centers with regular security audits.",
       },
       {
         id: 8,
