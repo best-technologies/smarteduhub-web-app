@@ -1,8 +1,15 @@
 import React from "react";
-import { Smartphone, Shield, Zap, Bell } from "lucide-react";
 import Image from "next/image";
+import { MobileAppData } from "@/types/landingPages";
 
-export default function MobileAppSection() {
+interface MobileAppSectionProps {
+  data: MobileAppData;
+}
+
+export default function MobileAppSection({ data }: MobileAppSectionProps) {
+  const { title, subtitle, features, stats, phoneImageSrc, phoneImageAlt } =
+    data;
+
   return (
     <section className="py-20 lg:py-28 bg-gradient-to-br from-brand-primary to-brand-primary-hover relative overflow-hidden">
       {/* Decorative Elements */}
@@ -16,62 +23,31 @@ export default function MobileAppSection() {
             {/* Heading */}
             <div className="space-y-4">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                Manage Your School on the Go
+                {title}
               </h2>
               <p className="text-lg text-white/90 leading-relaxed">
-                Take control of your educational institution from anywhere with
-                our mobile app. Access all features, receive instant
-                notifications, and stay connected with your school community.
+                {subtitle}
               </p>
             </div>
 
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-start gap-3">
-                <div className="bg-white/10 p-2 rounded-lg">
-                  <Zap className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Lightning Fast</h3>
-                  <p className="text-sm text-white/80">
-                    Optimized for speed and performance
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="bg-white/10 p-2 rounded-lg">
-                  <Shield className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Secure & Safe</h3>
-                  <p className="text-sm text-white/80">
-                    Bank-level encryption and security
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="bg-white/10 p-2 rounded-lg">
-                  <Bell className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Real-time Updates</h3>
-                  <p className="text-sm text-white/80">
-                    Instant notifications for important events
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="bg-white/10 p-2 rounded-lg">
-                  <Smartphone className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Cross-Platform</h3>
-                  <p className="text-sm text-white/80">
-                    Available on iOS and Android devices
-                  </p>
-                </div>
-                Mobile App Available
-              </div>
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="bg-white/10 p-2 rounded-lg">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{feature.title}</h3>
+                      <p className="text-sm text-white/80">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Download Buttons */}
@@ -121,18 +97,12 @@ export default function MobileAppSection() {
 
             {/* Stats */}
             <div className="flex flex-wrap gap-8 pt-4 border-t border-white/20">
-              <div>
-                <div className="text-3xl font-bold">1K+</div>
-                <div className="text-sm text-white/80">Active Users</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold">4.8★</div>
-                <div className="text-sm text-white/80">App Store Rating</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold">100%</div>
-                <div className="text-sm text-white/80">Uptime</div>
-              </div>
+              {stats.map((stat, index) => (
+                <div key={index}>
+                  <div className="text-3xl font-bold">{stat.value}</div>
+                  <div className="text-sm text-white/80">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -145,8 +115,8 @@ export default function MobileAppSection() {
               {/* Phone mockup with actual screenshot */}
               <div className="relative max-w-[650px] mx-auto">
                 <Image
-                  src="/imgs/store-download.png"
-                  alt="SmartEduHub Mobile App Interface"
+                  src={phoneImageSrc}
+                  alt={phoneImageAlt}
                   width={450}
                   height={700}
                   className="w-full h-auto drop-shadow-2xl"

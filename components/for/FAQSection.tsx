@@ -2,17 +2,25 @@
 
 import React, { useState, useMemo } from "react";
 import { Search } from "lucide-react";
-import { faqData } from "@/data/faqData";
+import { FAQCategory } from "@/types/landingPages";
 import FAQItem from "./FAQItem";
 import CategoryTabs from "./CategoryTabs";
 
-const FAQSection: React.FC = () => {
+interface FAQSectionProps {
+  categories: FAQCategory[];
+}
+
+const FAQSection: React.FC<FAQSectionProps> = ({ categories }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategorySlug, setActiveCategorySlug] = useState(faqData[0].slug);
+  const [activeCategorySlug, setActiveCategorySlug] = useState(
+    categories[0].slug
+  );
 
   // Filter Questions based on Search Term
   const filteredQuestions = useMemo(() => {
-    const currentCategory = faqData.find((c) => c.slug === activeCategorySlug);
+    const currentCategory = categories.find(
+      (c) => c.slug === activeCategorySlug
+    );
     if (!currentCategory) return [];
 
     if (!searchTerm) {
@@ -24,10 +32,10 @@ const FAQSection: React.FC = () => {
         item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.answer.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm, activeCategorySlug]);
+  }, [searchTerm, activeCategorySlug, categories]);
 
   // Extract unique category slugs for the tabs
-  const categories = faqData.map((c) => ({
+  const categoryTabs = categories.map((c) => ({
     category: c.category,
     slug: c.slug,
   }));
@@ -71,7 +79,7 @@ const FAQSection: React.FC = () => {
           {/* Category Navigation */}
           <div className="px-6 pt-6">
             <CategoryTabs
-              categories={categories}
+              categories={categoryTabs}
               activeSlug={activeCategorySlug}
               onSelectCategory={handleCategoryChange}
             />
@@ -92,7 +100,7 @@ const FAQSection: React.FC = () => {
                 <p className="text-gray-500">
                   No results found for "{searchTerm}" in the{" "}
                   {
-                    categories.find((c) => c.slug === activeCategorySlug)
+                    categoryTabs.find((c) => c.slug === activeCategorySlug)
                       ?.category
                   }{" "}
                   category.
