@@ -1,239 +1,236 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+// Register GSAP plugins
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+}
 
 interface UseScrollTabsOptions {
   totalTabs: number;
-  lockDuration?: number;
-  scrollThreshold?: number;
   enabled?: boolean;
 }
 
 interface UseScrollTabsReturn {
   currentTab: number;
-  isLocked: boolean;
   setCurrentTab: (index: number) => void;
   containerRef: React.RefObject<HTMLDivElement | null>;
-  isInView: boolean;
+  contentRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function useScrollTabs({
   totalTabs,
-  lockDuration = 800,
-  scrollThreshold = 50,
   enabled = true,
 }: UseScrollTabsOptions): UseScrollTabsReturn {
   const [currentTab, setCurrentTab] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const [isInView, setIsInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const touchStartRef = useRef(0);
-  const lastScrollTime = useRef(0);
-  const scrollAccumulator = useRef(0); // Accumulate small scroll movements
+  const contentRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const isManualScrolling = useRef(false); // Track manual scrolling
+
+  // Manual tab change handler (for clicking tabs)
+  const handleSetCurrentTab = useCallback(
+    (index: number) => {
+      console.log("🖱️ [Manual Tab Change] Clicked", {
+        requestedIndex: index,
+        isValid: index >= 0 && index < totalTabs,
+      });
+      if (index >= 0 && index < totalTabs) {
+        // Immediately update the tab state
+        setCurrentTab(index);
+
+        // Mark as manual scrolling to disable snap temporarily
+        isManualScrolling.current = true;
+
+        // Scroll to the corresponding position
+        if (scrollTriggerRef.current) {
+          const targetProgress = index / (totalTabs - 1);
+          const scrollDistance =
+            scrollTriggerRef.current.end - scrollTriggerRef.current.start;
+          const targetScroll =
+            scrollTriggerRef.current.start + scrollDistance * targetProgress;
+
+          console.log("⏩ [Manual Scroll] Details", {
+            targetTab: index,
+            targetProgress: targetProgress.toFixed(4),
+            scrollStart: scrollTriggerRef.current.start,
+            scrollEnd: scrollTriggerRef.current.end,
+            scrollDistance,
+            targetScroll,
+          });
+
+          // Use GSAP to scroll to the target position
+          gsap.to(window, {
+            scrollTo: {
+              y: targetScroll,
+              autoKill: false,
+            },
+            duration: 0.8,
+            ease: "power2.inOut",
+            overwrite: true,
+            onComplete: () => {
+              // Re-enable snapping after manual scroll completes
+              setTimeout(() => {
+                isManualScrolling.current = false;
+                console.log("✅ Manual scroll complete, snapping re-enabled");
+              }, 100);
+            },
+          });
+        }
+      }
+    },
+    [totalTabs]
+  );
 
   // Check for reduced motion preference
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const actualLockDuration = prefersReducedMotion ? 0 : lockDuration;
-
-  // Lock scrolling temporarily
-  const lockScroll = useCallback(() => {
-    setIsLocked(true);
-    setTimeout(() => setIsLocked(false), actualLockDuration);
-  }, [actualLockDuration]);
-
-  // Navigate to next tab
-  const goToNextTab = useCallback(() => {
-    if (currentTab < totalTabs - 1 && !isLocked) {
-      setCurrentTab((prev) => prev + 1);
-      lockScroll();
-      return true;
-    }
-    return false;
-  }, [currentTab, totalTabs, isLocked, lockScroll]);
-
-  // Navigate to previous tab
-  const goToPrevTab = useCallback(() => {
-    if (currentTab > 0 && !isLocked) {
-      setCurrentTab((prev) => prev - 1);
-      lockScroll();
-      return true;
-    }
-    return false;
-  }, [currentTab, isLocked, lockScroll]);
-
-  // Handle wheel events (mouse scroll)
+  // Setup GSAP ScrollTrigger
   useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      // Only handle if enabled and in view
-      if (!enabled || !isInView) {
-        return;
-      }
-
-      // Accumulate scroll delta for smoother detection
-      scrollAccumulator.current += e.deltaY;
-
-      console.log("Wheel event:", {
-        deltaY: e.deltaY,
-        accumulated: scrollAccumulator.current,
-        threshold: scrollThreshold,
-        isLocked,
-        currentTab,
-        isInView,
-      });
-
-      // Throttle scroll events - reduced to 50ms for better responsiveness
-      const now = Date.now();
-      if (now - lastScrollTime.current < 50) {
-        console.log("Throttled - too fast");
-        return;
-      }
-
-      if (!isLocked && Math.abs(scrollAccumulator.current) > scrollThreshold) {
-        lastScrollTime.current = now;
-        const scrollingDown = scrollAccumulator.current > 0;
-
-        // Reset accumulator
-        scrollAccumulator.current = 0;
-
-        if (scrollingDown) {
-          const handled = goToNextTab();
-          console.log("Scroll down handled:", handled);
-          if (handled) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        } else {
-          const handled = goToPrevTab();
-          console.log("Scroll up handled:", handled);
-          if (handled) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }
-      } else {
-        console.log("Not handling yet:", {
-          reason: isLocked ? "locked" : "accumulating",
-          threshold: scrollThreshold,
-          accumulated: Math.abs(scrollAccumulator.current),
-        });
-      }
-    };
+    if (!enabled || !containerRef.current || prefersReducedMotion) return;
 
     const container = containerRef.current;
-    if (container) {
-      console.log("Attaching wheel listener to container, isInView:", isInView);
-      container.addEventListener("wheel", handleWheel, { passive: false });
-      return () => {
-        console.log("Removing wheel listener");
-        scrollAccumulator.current = 0; // Reset on cleanup
-        container.removeEventListener("wheel", handleWheel);
-      };
-    }
-  }, [
-    enabled,
-    isInView,
-    isLocked,
-    goToNextTab,
-    goToPrevTab,
-    scrollThreshold,
-    currentTab,
-  ]);
 
-  // Handle touch events (mobile)
-  useEffect(() => {
-    if (!enabled || !isInView) return;
+    console.log("🚀 [ScrollTabs] Initializing ScrollTrigger", {
+      totalTabs,
+      enabled,
+      prefersReducedMotion,
+    });
 
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartRef.current = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isLocked) return;
-
-      const touchEnd = e.touches[0].clientY;
-      const diff = touchStartRef.current - touchEnd;
-
-      if (Math.abs(diff) > scrollThreshold) {
-        if (diff > 0) {
-          const handled = goToNextTab();
-          if (handled) {
-            e.preventDefault();
-            touchStartRef.current = touchEnd;
+    // Create a ScrollTrigger that:
+    // 1. Pins the section when it comes into view
+    // 2. Allows scrolling through tabs
+    // 3. Unpins when all tabs are viewed
+    scrollTriggerRef.current = ScrollTrigger.create({
+      trigger: container,
+      start: "top top", // Pin when top of container hits top of viewport
+      end: `+=${totalTabs * 100}%`, // Each tab gets 100vh of scroll
+      pin: true,
+      scrub: 1, // Smooth scrubbing effect
+      snap: {
+        snapTo: (value) => {
+          // Don't snap during manual scrolling
+          if (isManualScrolling.current) {
+            console.log("📍 [Snap] Skipped - manual scrolling");
+            return value; // Return current value, don't snap
           }
-        } else {
-          const handled = goToPrevTab();
-          if (handled) {
-            e.preventDefault();
-            touchStartRef.current = touchEnd;
-          }
-        }
-      }
-    };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("touchstart", handleTouchStart, {
-        passive: true,
-      });
-      container.addEventListener("touchmove", handleTouchMove, {
-        passive: false,
-      });
-      return () => {
-        container.removeEventListener("touchstart", handleTouchStart);
-        container.removeEventListener("touchmove", handleTouchMove);
-      };
-    }
-  }, [enabled, isInView, isLocked, goToNextTab, goToPrevTab, scrollThreshold]);
+          // Create snap points for each tab
+          const snapPoints = Array.from(
+            { length: totalTabs },
+            (_, i) => i / (totalTabs - 1)
+          );
 
-  // Handle keyboard navigation
-  useEffect(() => {
-    if (!enabled || !isInView) return;
+          // Find the closest snap point
+          const snappedValue = snapPoints.reduce((prev, curr) =>
+            Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
+          );
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isLocked) return;
+          // Calculate which tab index this corresponds to
+          const tabIndex = Math.round(snappedValue * (totalTabs - 1));
 
-      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-        const handled = goToNextTab();
-        if (handled) e.preventDefault();
-      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-        const handled = goToPrevTab();
-        if (handled) e.preventDefault();
-      }
-    };
+          console.log("📍 [Snap] Calculating snap point", {
+            inputValue: value.toFixed(4),
+            snapPoints: snapPoints.map((p) => p.toFixed(4)),
+            snappedValue: snappedValue.toFixed(4),
+            correspondingTab: tabIndex,
+          });
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [enabled, isInView, isLocked, goToNextTab, goToPrevTab]);
-
-  // Intersection Observer to detect when section is in view
-  useEffect(() => {
-    if (!enabled) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-        // Debug log
-        console.log("Section in view:", entry.isIntersecting);
+          return snappedValue;
+        },
+        duration: 0.4,
+        delay: 0.15, // Increased delay to give more scroll control
+        ease: "power1.inOut",
       },
-      {
-        threshold: 0.3, // Section must be 30% visible (more lenient)
-        rootMargin: "0px", // No buffer for better detection
-      }
-    );
+      onUpdate: (self) => {
+        // Calculate which tab should be active based on scroll progress
+        const progress = self.progress;
+        // Use rounding instead of floor for better accuracy
+        const newTab = Math.round(progress * (totalTabs - 1));
+        const clampedTab = Math.max(0, Math.min(newTab, totalTabs - 1));
 
-    const container = containerRef.current;
-    if (container) {
-      observer.observe(container);
-      return () => observer.unobserve(container);
-    }
-  }, [enabled]);
+        const logDetails = {
+          progress: progress.toFixed(4),
+          progressRaw: progress,
+          direction: self.direction,
+          isActive: self.isActive,
+          calculation: `${progress.toFixed(4)} * ${totalTabs - 1} = ${(
+            progress *
+            (totalTabs - 1)
+          ).toFixed(4)}`,
+          newTab,
+          clampedTab,
+        };
+
+        // Extra logging for tab 3 (index 2)
+        if (clampedTab === 2 || newTab === 2) {
+          console.log("🔍 [Tab 3 Debug]", logDetails);
+        }
+
+        console.log("📊 [ScrollTrigger] Update", logDetails);
+
+        // Use functional update to avoid dependency on currentTab
+        setCurrentTab((prevTab) => {
+          if (clampedTab !== prevTab) {
+            console.log("✅ [Tab Change]", {
+              from: prevTab,
+              to: clampedTab,
+              progress: progress.toFixed(4),
+              expectedSnapPoint: (clampedTab / (totalTabs - 1)).toFixed(4),
+            });
+            return clampedTab;
+          }
+          return prevTab;
+        });
+      },
+      onEnter: () => {
+        console.log("🎯 [ScrollTrigger] Enter - Section pinned");
+      },
+      onLeave: () => {
+        console.log("👋 [ScrollTrigger] Leave - Section unpinned");
+      },
+      onEnterBack: () => {
+        console.log("🔙 [ScrollTrigger] Enter Back");
+      },
+      onLeaveBack: () => {
+        console.log("⬆️ [ScrollTrigger] Leave Back");
+      },
+    });
+
+    console.log("✅ [ScrollTrigger] Created", {
+      start: scrollTriggerRef.current.start,
+      end: scrollTriggerRef.current.end,
+      pin: scrollTriggerRef.current.pin,
+    });
+
+    return () => {
+      console.log("🧹 [ScrollTrigger] Cleanup - Killing ScrollTrigger");
+      if (scrollTriggerRef.current) {
+        scrollTriggerRef.current.kill();
+      }
+    };
+  }, [enabled, totalTabs, prefersReducedMotion]); // REMOVED currentTab from dependencies!
+
+  // Refresh ScrollTrigger on window resize
+  useEffect(() => {
+    if (!enabled || prefersReducedMotion) return;
+
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [enabled, prefersReducedMotion]);
 
   return {
     currentTab,
-    isLocked,
-    setCurrentTab,
+    setCurrentTab: handleSetCurrentTab,
     containerRef,
-    isInView,
+    contentRef,
   };
 }

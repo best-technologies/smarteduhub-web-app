@@ -252,3 +252,18 @@ h6 {
     overscroll-behavior: contain;
   }
 }
+
+/* Ensure smooth scrolling is enabled globally */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

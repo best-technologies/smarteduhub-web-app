@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import gsap from "gsap";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
@@ -17,24 +18,76 @@ export default function TabbedFeatureSection({
 }: TabbedFeatureSectionProps) {
   const { sectionTitle, sectionSubtitle, tabs } = data;
 
-  const { currentTab, setCurrentTab, containerRef } = useScrollTabs({
+  console.log("🎨 [TabbedFeatureSection] Render", {
     totalTabs: tabs.length,
-    lockDuration: 600,
-    scrollThreshold: 10, // Reasonable threshold with accumulator
-    enabled: true,
+    tabTitles: tabs.map((t) => t.title),
   });
 
+  const { currentTab, setCurrentTab, containerRef, contentRef } = useScrollTabs(
+    {
+      totalTabs: tabs.length,
+      enabled: true,
+    }
+  );
+
   const activeContent = tabs[currentTab];
+  const prevTabRef = useRef(currentTab);
+
+  console.log("[Current State]", {
+    currentTab,
+    activeTabTitle: activeContent.title,
+  });
+
+  // Animate content changes with GSAP
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) return;
+
+    const direction = currentTab > prevTabRef.current ? 1 : -1;
+
+    console.log("🎬 [Animation] Tab changed", {
+      from: prevTabRef.current,
+      to: currentTab,
+      direction: direction > 0 ? "forward" : "backward",
+    });
+
+    prevTabRef.current = currentTab;
+
+    const content = contentRef.current;
+
+    // Animate out and in
+    gsap.fromTo(
+      content,
+      {
+        opacity: 0,
+        y: direction * 30,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        onComplete: () => {
+          console.log("✨ [Animation] Complete for tab", currentTab);
+        },
+      }
+    );
+  }, [currentTab, contentRef]);
 
   return (
     <section
       id="features"
       ref={containerRef}
-      className="py-20 lg:py-28 bg-white"
+      className="h-screen relative overflow-hidden"
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 h-full flex flex-col justify-center">
         {/* Section Heading */}
-        <div className="text-center mb-12 lg:mb-16">
+        <div className="text-center mb-8 lg:mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             {sectionTitle}
           </h2>
@@ -44,16 +97,16 @@ export default function TabbedFeatureSection({
         </div>
 
         {/* Tabs */}
-        <div className="flex justify-center overflow-x-auto scrollbar-hide gap-2 mb-[-1px]">
+        <div className="flex justify-center overflow-x-auto scrollbar-hide gap-2 mb-[-1px] z-10">
           {tabs.map((tab, index) => {
             return (
               <button
                 key={tab.id}
                 onClick={() => setCurrentTab(index)}
                 className={cn(
-                  "flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-200 rounded-t-xl rounded-tl-none cursor-pointer",
+                  "flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 rounded-t-xl rounded-tl-none cursor-pointer",
                   currentTab === index
-                    ? "text-white bg-gradient-to-br from-brand-primary to-brand-primary-hover"
+                    ? "text-white bg-gradient-to-br from-brand-primary to-brand-primary-hover scale-105"
                     : "text-white/70 bg-brand-primary/60 hover:bg-brand-primary/80"
                 )}
               >
@@ -64,9 +117,12 @@ export default function TabbedFeatureSection({
         </div>
 
         {/* Container with brand primary color */}
-        <div className="bg-gradient-to-br from-brand-primary to-brand-primary-hover rounded-3xl rounded-tl-none shadow-2xl overflow-hidden">
+        <div className="bg-gradient-to-br from-brand-primary to-brand-primary-hover rounded-3xl rounded-tl-none shadow-2xl overflow-hidden flex-1 max-h-[600px]">
           {/* Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 p-8 lg:p-12">
+          <div
+            ref={contentRef}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 p-8 lg:p-12 h-full"
+          >
             {/* Left side - Contextual content */}
             <div className="flex flex-col justify-center space-y-6">
               {/* Badge */}
