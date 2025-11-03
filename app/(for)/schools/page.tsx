@@ -6,7 +6,7 @@ import FeatureGrid from "@/components/for/FeatureGrid";
 import TabbedFeatureSection from "@/components/for/TabbedFeatureSection";
 import MobileAppSection from "@/components/for/MobileAppSection";
 import FAQSection from "@/components/for/FAQSection";
-import CTASection from "@/components/for/CTASection";
+// import CTASection from "@/components/for/CTASection";
 import { schoolsData } from "@/data/landingPages";
 import { schoolsFAQ } from "@/data/faq";
 
@@ -27,7 +27,7 @@ export default function SchoolsHomepage() {
 
       <FAQSection categories={schoolsFAQ} />
 
-      {schoolsData.cta && <CTASection {...schoolsData.cta} />}
+      {/* {schoolsData.cta && <CTASection {...schoolsData.cta} />} */}
 
       <Footer />
     </div>
