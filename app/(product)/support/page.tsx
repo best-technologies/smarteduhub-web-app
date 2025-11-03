@@ -412,7 +412,7 @@ export default function SupportPage() {
                 Still need help?
               </h2>
               <p className="text-xl text-gray-600">
-                Send us a message and we'll get back to you within 24 hours
+                Send us a message and we&apos;ll get back to you within 24 hours
               </p>
             </div>
 

@@ -8,14 +8,8 @@ import {
   Users,
   BarChart3,
   MessageSquare,
-  FileText,
-  Award,
   CreditCard,
-  Shield,
   Zap,
-  Globe,
-  Smartphone,
-  User,
 } from "lucide-react";
 import Link from "next/link";
 

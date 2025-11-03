@@ -296,7 +296,7 @@ export default function PricingPage() {
 
                 <div className="space-y-3">
                   <p className="text-sm font-semibold text-gray-900 mb-3">
-                    What's included:
+                    What&apos;s included:
                   </p>
                   {plan.features.map((feature, idx) => (
                     <div key={idx} className="flex items-start">
