@@ -22,8 +22,8 @@ export default function HeroWithLaptop({
   imageAlt,
 }: HeroWithLaptopProps) {
   return (
-    <section className="relative overflow-hidden bg-white pt-16 pb-32">
-      <div className="container mx-auto px-4">
+    <section className="relative overflow-hidden bg-white pt-10 pb-32">
+      <div className="container mx-auto">
         <div
           className="rounded-3xl px-6 py-12 md:px-12 md:py-16"
           style={{
