@@ -18,10 +18,10 @@ export default function TabbedFeatureSection({
 }: TabbedFeatureSectionProps) {
   const { sectionTitle, sectionSubtitle, tabs } = data;
 
-  console.log("🎨 [TabbedFeatureSection] Render", {
-    totalTabs: tabs.length,
-    tabTitles: tabs.map((t) => t.title),
-  });
+  // console.log("[TabbedFeatureSection] Render", {
+  //   totalTabs: tabs.length,
+  //   tabTitles: tabs.map((t) => t.title),
+  // });
 
   const { currentTab, setCurrentTab, containerRef, contentRef } = useScrollTabs(
     {
@@ -146,7 +146,7 @@ export default function TabbedFeatureSection({
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button
                   size="default"
-                  className="bg-white text-brand-primary hover:bg-gray-100"
+                  className="text-brand-primary hover:bg-gray-100"
                 >
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
