@@ -87,10 +87,10 @@ export default function TabbedFeatureSection({
       <div className="container mx-auto px-4 py-8 lg:py-12 flex flex-col">
         {/* Section Heading */}
         <div className="text-center mb-6 lg:mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-lg md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             {sectionTitle}
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-sm md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
             {sectionSubtitle}
           </p>
         </div>
@@ -132,12 +132,12 @@ export default function TabbedFeatureSection({
               </div>
 
               {/* Content Title */}
-              <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight">
+              <h2 className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight">
                 {activeContent.contentTitle}
               </h2>
 
               {/* Description */}
-              <p className="text-white/90 text-sm lg:text-base leading-relaxed">
+              <p className="text-white/90 text-sm md:text-base lg:text-lg leading-relaxed">
                 {activeContent.description}
               </p>
 

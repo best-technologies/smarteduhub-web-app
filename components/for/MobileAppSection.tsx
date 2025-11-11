@@ -22,10 +22,10 @@ export default function MobileAppSection({ data }: MobileAppSectionProps) {
           <div className="space-y-8 text-white">
             {/* Heading */}
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+              <h2 className="text-lg md:text-4xl lg:text-5xl font-bold leading-tight">
                 {title}
               </h2>
-              <p className="text-lg text-white/90 leading-relaxed">
+              <p className="text-sm md:text-lg lg:text-xl text-white/90 leading-relaxed">
                 {subtitle}
               </p>
             </div>
@@ -40,8 +40,10 @@ export default function MobileAppSection({ data }: MobileAppSectionProps) {
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">{feature.title}</h3>
-                      <p className="text-sm text-white/80">
+                      <h3 className="text-sm md:text-base font-semibold mb-1">
+                        {feature.title}
+                      </h3>
+                      <p className="text-xs md:text-sm text-white/80">
                         {feature.description}
                       </p>
                     </div>
@@ -55,7 +57,7 @@ export default function MobileAppSection({ data }: MobileAppSectionProps) {
               {/* App Store Button */}
               <a
                 href="#"
-                className="relative inline-flex items-center justify-center gap-3 bg-black text-white px-6 py-3.5 rounded-xl transition-all duration-200 overflow-hidden group"
+                className="relative inline-flex items-center justify-center gap-3 bg-black text-white px-6 py-3.5 rounded-xl transition-all duration-200 overflow-hidden group w-full sm:w-auto max-w-50"
               >
                 {/* Sweep flash effect */}
                 <div className="absolute inset-0 -translate-x-full translate-y-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:translate-x-full group-hover:-translate-y-full transition-transform duration-700 ease-in-out" />
@@ -76,7 +78,7 @@ export default function MobileAppSection({ data }: MobileAppSectionProps) {
               {/* Google Play Button */}
               <a
                 href="#"
-                className="relative inline-flex items-center justify-center gap-3 bg-black text-white px-6 py-3.5 rounded-xl transition-all duration-200 overflow-hidden group"
+                className="relative inline-flex items-center justify-center gap-3 bg-black text-white px-6 py-3.5 rounded-xl transition-all duration-200 overflow-hidden group w-full sm:w-auto max-w-50"
               >
                 {/* Sweep flash effect */}
                 <div className="absolute inset-0 -translate-x-full translate-y-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:translate-x-full group-hover:-translate-y-full transition-transform duration-700 ease-in-out" />
@@ -99,8 +101,12 @@ export default function MobileAppSection({ data }: MobileAppSectionProps) {
             <div className="flex flex-wrap gap-8 pt-4 border-t border-white/20">
               {stats.map((stat, index) => (
                 <div key={index}>
-                  <div className="text-3xl font-bold">{stat.value}</div>
-                  <div className="text-sm text-white/80">{stat.label}</div>
+                  <div className="text-2xl md:text-3xl font-bold">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs md:text-sm text-white/80">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>

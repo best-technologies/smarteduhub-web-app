@@ -21,7 +21,7 @@ export default function HeroWithLaptop({
   imageAlt,
 }: HeroWithLaptopProps) {
   return (
-    <section className="relative overflow-visible bg-white pt-10 pb-32">
+    <section className="relative overflow-hidden bg-white pt-2 lg:pt-10 pb-16 lg:pb-32 px-2">
       <div className="container mx-auto">
         {/* Arch-shaped gradient background container */}
         <div className="relative">
@@ -66,7 +66,7 @@ export default function HeroWithLaptop({
             />
           </svg>
 
-          <div className="relative px-6 py-12 md:px-12 md:py-16">
+          <div className="relative px-2 lg:px-6 py-12 md:px-12 md:py-16">
             <div className="text-center max-w-4xl mx-auto relative">
               {/* Wire-mesh SVG Background - lowest layer */}
               <div
@@ -80,8 +80,8 @@ export default function HeroWithLaptop({
               />
 
               {/* Main Headline */}
-              <div className="space-y-6 mb-12 relative z-10">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+              <div className="space-y-6 mb-6 lg:mb-12 relative z-10">
+                <h1 className="text-lg md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
                   <span className="block">
                     {title.split(" ").slice(0, -2).join(" ")}
                   </span>
@@ -89,13 +89,13 @@ export default function HeroWithLaptop({
                     {title.split(" ").slice(-2).join(" ")}
                   </span>
                 </h1>
-                <p className="text-lg md:text-xl text-gray-700 mx-auto">
+                <p className="text-sm md:text-xl text-gray-700 mx-auto">
                   {subtitle}
                 </p>
               </div>
 
               {/* CTA Section */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 relative z-10">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-0 lg:mb-12 relative z-10">
                 {ctaSecondaryText && ctaSecondaryHref && (
                   <ScrollLink href={ctaSecondaryHref}>
                     <GsapMorphButton size="lg" variant="outline">
@@ -127,7 +127,7 @@ export default function HeroWithLaptop({
                   }}
                 />
 
-                <div className="relative bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-3xl p-4 lg:p-[17px] backdrop-blur-sm border border-gray-200 z-20">
+                <div className="relative bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-3xl p-2 md:p-4 lg:p-[17px] backdrop-blur-sm border border-gray-200 z-20">
                   {/* Remaining side gradients around mockup */}
                   {/* Left Side Gradients */}
                   {/* Top-Left Side */}

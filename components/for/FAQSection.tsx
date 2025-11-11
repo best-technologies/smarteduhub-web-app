@@ -54,10 +54,10 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categories }) => {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12 lg:mb-16 max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-lg md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-sm md:text-lg lg:text-xl text-gray-600">
             Find answers to common questions about SmartEduHub. Can&apos;t find
             what you&apos;re looking for? Contact our support team.
           </p>
@@ -115,7 +115,9 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categories }) => {
 
         {/* Contact Support CTA */}
         <div className="text-center mt-12">
-          <p className="text-gray-600 mb-4">Still have questions?</p>
+          <p className="text-sm md:text-base text-gray-600 mb-4">
+            Still have questions?
+          </p>
           <GsapMorphButton onClick={() => router.push("/support")}>
             Contact Support
           </GsapMorphButton>

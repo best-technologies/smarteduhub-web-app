@@ -48,13 +48,15 @@ export default function FeatureGrid({
 
   return (
     <section className="bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 py-8 lg:py-0">
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-4xl font-bold text-brand-heading mb-4">
+          <h2 className="text-lg md:text-4xl lg:text-5xl font-bold text-brand-heading mb-4">
             {title}
           </h2>
-          <p className="text-xl text-brand-secondary">{subtitle}</p>
+          <p className="text-sm md:text-lg lg:text-xl text-brand-secondary">
+            {subtitle}
+          </p>
         </div>
 
         {/* Features Grid */}

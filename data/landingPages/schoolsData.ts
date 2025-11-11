@@ -1,15 +1,5 @@
 import { LandingPageData } from "@/types/landingPages";
-import {
-  Zap,
-  BarChart3,
-  Users,
-  DollarSign,
-  MessageSquare,
-  Calendar,
-  Smartphone,
-  Shield,
-  Bell,
-} from "lucide-react";
+import { Zap, Smartphone, Shield, Bell } from "lucide-react";
 
 export const schoolsData: LandingPageData = {
   hero: {
