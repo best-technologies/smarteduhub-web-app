@@ -23,13 +23,15 @@ export default function Footer() {
             {/* Left Side - Logo and Description */}
             <div>
               <div className="mb-6">
-                <Image
-                  src="/logos/smeh-logo.png"
-                  alt="SmartEdu Hub"
-                  width={180}
-                  height={60}
-                  className="mb-4"
-                />
+                <Link href="/" className="inline-block">
+                  <Image
+                    src="/logos/smeh-logo.png"
+                    alt="SmartEdu Hub"
+                    width={180}
+                    height={60}
+                    className="mb-4"
+                  />
+                </Link>
                 <p className="text-gray-400 leading-relaxed max-w-md">
                   Empowering education through innovative technology. SmartEdu
                   Hub connects schools, teachers, students, and parents in a
@@ -95,32 +97,32 @@ export default function Footer() {
                 <ul className="space-y-2 text-gray-400">
                   <li>
                     <Link
-                      href="/for/schools"
-                      className="hover:text-white transition-colors"
+                      href="/schools"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Schools
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/for/teachers"
-                      className="hover:text-white transition-colors"
+                      href="/teachers"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Teachers
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/for/parents"
-                      className="hover:text-white transition-colors"
+                      href="/parents"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Parents
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/for/students"
-                      className="hover:text-white transition-colors"
+                      href="/students"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Students
                     </Link>
@@ -135,7 +137,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="/"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Home
                     </Link>
@@ -143,7 +145,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="/support"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Support
                     </Link>
@@ -151,7 +153,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="/resources"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Resources
                     </Link>
@@ -166,7 +168,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="/privacy-policy"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Privacy Policy
                     </Link>
@@ -174,7 +176,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="/cookies-policy"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-brand-primary transition-colors"
                     >
                       Cookies Policy
                     </Link>

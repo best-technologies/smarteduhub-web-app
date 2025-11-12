@@ -2,7 +2,9 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { GsapMorphButton } from "@/components/ui/gsapmorph-button";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -73,8 +75,17 @@ const Navigation = () => {
           <div className="flex items-center justify-between py-4">
             {/* Logo + Minor Navigation Links (Desktop) */}
             <div className="flex items-center space-x-6">
-              <div className="text-xl font-bold text-gray-800">SmEH</div>
-              <div className="hidden md:flex items-center space-x-2">
+              <Link href="/" className="flex items-center">
+                <Image
+                  src="/logos/smeh-logo.png"
+                  alt="SmartEduHub Logo"
+                  width={120}
+                  height={40}
+                  priority
+                  className="h-12 w-auto"
+                />
+              </Link>
+              <div className="hidden lg:flex items-center space-x-2">
                 {minorNavLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -92,7 +103,7 @@ const Navigation = () => {
             </div>
 
             {/* Major Navigation - Main Links (Desktop) */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-8">
               <Link
                 href="/support"
                 className="text-gray-600 hover:text-brand-primary transition-colors"
@@ -114,7 +125,7 @@ const Navigation = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="lg:hidden p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open menu"
             >
@@ -126,7 +137,7 @@ const Navigation = () => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -140,8 +151,14 @@ const Navigation = () => {
             }`}
           >
             {/* Menu Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="text-xl font-bold text-gray-800">SmEH</div>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <Image
+                src="/logos/smeh-logo.png"
+                alt="SmartEduHub Logo"
+                width={120}
+                height={40}
+                className="h-10 w-auto"
+              />
               <button
                 className="p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -184,8 +201,8 @@ const Navigation = () => {
               </div>
 
               {/* Auth Buttons */}
-              <div className="space-y-3 pt-6 border-t border-gray-200">
-                <GsapMorphButton
+              <div className="pt-6 border-t border-gray-200 flex space-x-3">
+                <Button
                   variant="outline"
                   className="w-full"
                   onClick={() => {
@@ -194,8 +211,8 @@ const Navigation = () => {
                   }}
                 >
                   Login
-                </GsapMorphButton>
-                <GsapMorphButton
+                </Button>
+                <Button
                   className="w-full"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
@@ -203,7 +220,7 @@ const Navigation = () => {
                   }}
                 >
                   Sign Up
-                </GsapMorphButton>
+                </Button>
               </div>
             </div>
           </div>
