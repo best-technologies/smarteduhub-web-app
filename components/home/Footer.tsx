@@ -1,6 +1,5 @@
 import React from "react";
-
-import { GsapMorphButton } from "@/components/ui/gsapmorph-button";
+import SubscribeSection from "./SubscribeSection";
 
 export default function Footer() {
   return (
@@ -12,15 +11,7 @@ export default function Footer() {
               Get the latest updates about SmartEdu Hub features and releases
             </h3>
           </div>
-          <div className="flex flex-col md:flex-row gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 bg-transparent border border-brand-border-secondary rounded-md text-white placeholder-brand-border-secondary focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
-              aria-label="Subscribe to newsletter"
-            />
-            <GsapMorphButton>Subscribe</GsapMorphButton>
-          </div>
+          <SubscribeSection />
         </div>
 
         <div className="border-t border-gray-800 pt-8">
