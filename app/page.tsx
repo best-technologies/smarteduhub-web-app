@@ -1,52 +1,40 @@
-"use client";
-
-import Testimonials from "@/components/home/Testimonials";
-
+import React from "react";
 import Navigation from "@/components/home/Header";
-import HeroSection from "@/components/home/Hero";
-import PartnersSection from "@/components/home/Partners";
-import BenefitsSection from "@/components/home/BenefitsSection";
-import FeaturesSection from "@/components/home/FeatureSection";
-import FAQs from "@/components/home/FAQs";
 import Footer from "@/components/home/Footer";
+import HeroWithLaptop from "@/components/for/HeroWithLaptop";
+import FreeTrialSection from "@/components/for/FreeTrialSection";
+import FeatureGrid from "@/components/for/FeatureGrid";
+import TabbedFeatureSection from "@/components/for/TabbedFeatureSection";
+import MobileAppSection from "@/components/for/MobileAppSection";
+import FAQSection from "@/components/for/FAQSection";
+// import CTASection from "@/components/for/CTASection";
+import { schoolsData } from "@/data/landingPages";
+import { schoolsFAQ } from "@/data/faq";
 
-const Home = () => {
+export default function Home() {
   return (
-    <>
-      {/* Navigation */}
+    <div className="min-h-screen bg-white">
       <Navigation />
 
-      <div
-        style={{
-          background:
-            "linear-gradient(to bottom, #F0F3FF 0%, #F0F3FF66 85%, #fff 100%)",
-        }}
-      >
-        {/* Hero Section */}
-        <HeroSection />
+      <HeroWithLaptop {...schoolsData.hero} />
 
-        {/* Partners Section - Infinite Loop */}
-        <PartnersSection />
-      </div>
+      <FreeTrialSection />
 
-      <main className="bg-white">
-        {/* Features Section - Left Aligned */}
-        <FeaturesSection />
+      <FeatureGrid {...schoolsData.gettingStarted} />
 
-        {/* Benefits Section - Blue Icons and Dots */}
-        <BenefitsSection />
+      {schoolsData.tabbedFeatures && (
+        <div className="hidden lg:block">
+          <TabbedFeatureSection data={schoolsData.tabbedFeatures} />
+        </div>
+      )}
 
-        {/* Testimonials Section - Proper Carousel */}
-        <Testimonials />
+      <MobileAppSection data={schoolsData.mobileApp} />
 
-        {/* FAQ Section - Working Accordion */}
-        <FAQs />
-      </main>
+      <FAQSection categories={schoolsFAQ} />
 
-      {/* Footer - Side by Side Layout */}
+      {/* {schoolsData.cta && <CTASection {...schoolsData.cta} />} */}
+
       <Footer />
-    </>
+    </div>
   );
-};
-
-export default Home;
+}
