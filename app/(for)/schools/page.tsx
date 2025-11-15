@@ -23,7 +23,9 @@ export default function SchoolsHomepage() {
       <FeatureGrid {...schoolsData.gettingStarted} />
 
       {schoolsData.tabbedFeatures && (
-        <TabbedFeatureSection data={schoolsData.tabbedFeatures} />
+        <div className="hidden lg:block">
+          <TabbedFeatureSection data={schoolsData.tabbedFeatures} />
+        </div>
       )}
 
       <MobileAppSection data={schoolsData.mobileApp} />
