@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { cn } from "@/lib/utils";
-import { GsapMorphButton } from "@/components/ui/gsapmorph-button";
 import { TabbedFeatureData } from "@/types/landingPages";
 import { useScrollTabs } from "@/hooks/useScrollTabs";
 
