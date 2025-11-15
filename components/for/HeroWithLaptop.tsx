@@ -1,24 +1,23 @@
 import React from "react";
-import { GsapMorphButton } from "@/components/ui/gsapmorph-button";
 import Image from "next/image";
-import ScrollLink from "@/components/ui/ScrollLink";
+import AppStoreButtons from "@/components/ui/AppStoreButtons";
 
 interface HeroWithLaptopProps {
   title: string;
   subtitle: string;
-  ctaSecondaryText?: string;
-  ctaSecondaryHref?: string;
   imageSrc: string;
   imageAlt: string;
+  appStoreHref?: string;
+  playStoreHref?: string;
 }
 
 export default function HeroWithLaptop({
   title,
   subtitle,
-  ctaSecondaryText = "Explore Features",
-  ctaSecondaryHref = "#features",
   imageSrc,
   imageAlt,
+  appStoreHref,
+  playStoreHref,
 }: HeroWithLaptopProps) {
   return (
     <section className="relative overflow-hidden bg-white pt-2 lg:pt-10 pb-16 lg:pb-32 px-2">
@@ -95,14 +94,11 @@ export default function HeroWithLaptop({
               </div>
 
               {/* CTA Section */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-0 lg:mb-12 relative z-10">
-                {ctaSecondaryText && ctaSecondaryHref && (
-                  <ScrollLink href={ctaSecondaryHref}>
-                    <GsapMorphButton size="lg" variant="outline">
-                      {ctaSecondaryText}
-                    </GsapMorphButton>
-                  </ScrollLink>
-                )}
+              <div className="flex items-center justify-center mb-0 lg:mb-12 relative z-10">
+                <AppStoreButtons
+                  appStoreHref={appStoreHref}
+                  playStoreHref={playStoreHref}
+                />
               </div>
 
               {/* Product Mockup */}
