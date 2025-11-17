@@ -108,7 +108,7 @@ const Navigation = () => {
                 href="/support"
                 className="text-gray-600 hover:text-brand-primary transition-colors"
               >
-                Contact Support
+                Support
               </Link>
 
               <GsapMorphButton
@@ -196,7 +196,7 @@ const Navigation = () => {
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  Contact Support
+                  Support
                 </button>
               </div>
 
