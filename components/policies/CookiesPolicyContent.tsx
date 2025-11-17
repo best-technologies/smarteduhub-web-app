@@ -7,9 +7,7 @@ export default function CookiesPolicyContent() {
         <h1 className="text-4xl font-bold text-brand-heading mb-6">
           Cookies Policy
         </h1>
-        <p className="text-gray-600 mb-8">
-          Last updated: {new Date().toLocaleDateString()}
-        </p>
+        <p className="text-gray-600 mb-8">Last updated: 7 April 2025</p>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold text-brand-heading mb-4">
