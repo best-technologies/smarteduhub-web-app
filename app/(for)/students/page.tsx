@@ -11,6 +11,37 @@ import MobileAppSection from "@/components/for/MobileAppSection";
 import FAQSection from "@/components/for/FAQSection";
 import { studentsData } from "@/data/landingPages";
 import { studentsFAQ } from "@/data/faq";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "For Students",
+  description:
+    "Access your courses, submit assignments, track grades, and engage with interactive learning tools. SmartEdu Hub empowers students to take control of their education journey.",
+  keywords: [
+    "online learning",
+    "student portal",
+    "homework management",
+    "assignment submission",
+    "grade tracking",
+    "course access",
+    "digital learning",
+    "study tools",
+    "student dashboard",
+    "educational platform",
+  ],
+  openGraph: {
+    title: "SmartEdu Hub - For Students",
+    description:
+      "Access your courses, submit assignments, track grades, and engage with interactive learning tools. Take control of your education journey.",
+    images: ["/og/students.png"],
+  },
+  twitter: {
+    title: "SmartEdu Hub - For Students",
+    description:
+      "Access your courses, submit assignments, track grades, and engage with interactive learning tools. Take control of your education journey.",
+    images: ["/og/students.png"],
+  },
+};
 
 export default function StudentsHomepage() {
   return (

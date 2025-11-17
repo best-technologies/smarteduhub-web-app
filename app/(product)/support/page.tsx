@@ -10,6 +10,8 @@ import CategoryTabs from "@/components/for/CategoryTabs";
 import ContactForm from "@/components/ui/ContactForm";
 import { useState, useMemo } from "react";
 
+// Note: Metadata moved to layout.tsx or separate metadata export due to "use client" directive
+
 export default function SupportPage() {
   const [activeCategorySlug, setActiveCategorySlug] = useState("general");
 

@@ -7,6 +7,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import VoiceflowAgent from "@/components/ai-agent/VoiceflowAgent";
+import type { Metadata } from "next";
 
 const averia = Averia_Serif_Libre({
   subsets: ["latin"],
@@ -22,8 +23,14 @@ const delius = Delius({
   display: "swap",
 });
 
-export const metadata = {
-  title: "SmartEdu Hub - Your School Management Solution",
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://smarteduhub.com";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "SmartEdu Hub - Your School Management Solution",
+    template: "SmartEdu Hub - %s",
+  },
   description:
     "SmartEdu Hub is your comprehensive solution for managing educational institutions. From student records to teacher tools, streamline your school's operations and enhance learning outcomes with our all-in-one platform.",
   keywords: [
@@ -49,15 +56,28 @@ export const metadata = {
       url: "https://besttechnologiesltd.com",
     },
   ],
+  creator: "Best Technologies Ltd.",
+  publisher: "Best Technologies Ltd.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
   openGraph: {
+    type: "website",
+    locale: "en_US",
     title: "SmartEdu Hub - Your School Management Solution",
     description:
       "Transform your school with SmartEdu Hub, the all-in-one platform for managing students, teachers, and administrative tasks. Streamline operations, enhance communication, and improve learning outcomes.",
-    url: "https://smarteduhub.com",
+    url: siteUrl,
     siteName: "SmartEdu Hub",
     images: [
       {
-        url: "https://smarteduhub.com/og-image.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "SmartEdu Hub - Your School Management Solution",
@@ -69,21 +89,61 @@ export const metadata = {
     title: "SmartEdu Hub - Your School Management Solution",
     description:
       "Transform your school with SmartEdu Hub, the all-in-one platform for managing students, teachers, and administrative tasks. Streamline operations, enhance communication, and improve learning outcomes.",
-    creator: "@Best Technologies Ltd.",
-    images: ["https://besttechnologiesltd.com/og-image.png"],
+    creator: "@smarteduhub",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "google-site-verification-code",
+    yandex: "yandex-verification-code",
   },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: "SmartEdu Hub",
+    url: siteUrl,
+    logo: `${siteUrl}/logos/main-logo.svg`,
+    description:
+      "Comprehensive school management platform for educational institutions. Streamline operations, enhance communication, and improve learning outcomes.",
+    sameAs: [
+      "https://twitter.com/smarteduhub",
+      "https://facebook.com/smarteduhub",
+      "https://linkedin.com/company/smarteduhub",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "Customer Support",
+      email: "support@smarteduhub.com",
+      availableLanguage: ["English"],
+    },
+  };
+
   return (
     <html
       lang="en"
       className={`${averia.variable} ${delius.variable} antialiased`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+      </head>
       <body>
         <AuthProvider>
           <QueryProvider>

@@ -9,6 +9,37 @@ import MobileAppSection from "@/components/for/MobileAppSection";
 import FAQSection from "@/components/for/FAQSection";
 import { parentsData } from "@/data/landingPages";
 import { parentsFAQ } from "@/data/faq";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "For Parents",
+  description:
+    "Stay connected with your child's education journey. Track progress, communicate with teachers, view attendance, and support your child's learning with SmartEdu Hub's parent portal.",
+  keywords: [
+    "parent portal",
+    "student progress tracking",
+    "school communication",
+    "parent teacher communication",
+    "attendance monitoring",
+    "grade tracking",
+    "homework updates",
+    "school announcements",
+    "parent engagement",
+    "child education",
+  ],
+  openGraph: {
+    title: "SmartEdu Hub - For Parents",
+    description:
+      "Stay connected with your child's education journey. Track progress, communicate with teachers, and support your child's learning.",
+    images: ["/og/parents.png"],
+  },
+  twitter: {
+    title: "SmartEdu Hub - For Parents",
+    description:
+      "Stay connected with your child's education journey. Track progress, communicate with teachers, and support your child's learning.",
+    images: ["/og/parents.png"],
+  },
+};
 
 export default function ParentsHomepage() {
   return (

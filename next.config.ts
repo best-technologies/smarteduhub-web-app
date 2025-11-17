@@ -1,8 +1,76 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // You can add other config options here
+  // Enable React strict mode for better development experience
   reactStrictMode: true,
+
+  // Enable compression for better performance
+  compress: true,
+
+  // Image optimization configuration
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "smarteduhub.com",
+      },
+      {
+        protocol: "https",
+        hostname: "besttechnologiesltd.com",
+      },
+    ],
+  },
+
+  // Security and performance headers
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains; preload",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
+  },
+
+  // Redirects configuration
+  async redirects() {
+    return [
+      {
+        source: "/for/schools",
+        destination: "/",
+        permanent: true,
+      },
+    ];
+  },
 
   webpack(config) {
     // Ensure that the SVGR loader is applied to SVG files

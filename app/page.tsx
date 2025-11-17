@@ -10,6 +10,37 @@ import FAQSection from "@/components/for/FAQSection";
 // import CTASection from "@/components/for/CTASection";
 import { schoolsData } from "@/data/landingPages";
 import { schoolsFAQ } from "@/data/faq";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "SmartEdu Hub - Your School Management Solution",
+  description:
+    "Transform your educational institution with SmartEdu Hub's comprehensive school management platform. Streamline operations, enhance communication, and improve learning outcomes with our all-in-one solution for schools.",
+  keywords: [
+    "school management system",
+    "education management software",
+    "school administration",
+    "student information system",
+    "learning management system",
+    "school operations",
+    "educational technology",
+    "school software",
+    "academic management",
+    "school platform",
+  ],
+  openGraph: {
+    title: "SmartEdu Hub - Your School Management Solution",
+    description:
+      "Transform your educational institution with comprehensive school management. Streamline operations, enhance communication, and improve learning outcomes.",
+    images: ["/og/home.png"],
+  },
+  twitter: {
+    title: "SmartEdu Hub - Your School Management Solution",
+    description:
+      "Transform your educational institution with comprehensive school management. Streamline operations, enhance communication, and improve learning outcomes.",
+    images: ["/og/home.png"],
+  },
+};
 
 export default function Home() {
   return (

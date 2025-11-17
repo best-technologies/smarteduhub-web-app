@@ -9,6 +9,37 @@ import MobileAppSection from "@/components/for/MobileAppSection";
 import FAQSection from "@/components/for/FAQSection";
 import { teachersData } from "@/data/landingPages";
 import { teachersFAQ } from "@/data/faq";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "For Teachers",
+  description:
+    "Simplify classroom management, create engaging lessons, track student progress, and collaborate effectively. SmartEdu Hub provides teachers with powerful tools to enhance teaching and learning.",
+  keywords: [
+    "classroom management",
+    "lesson planning",
+    "grading system",
+    "teacher tools",
+    "student assessment",
+    "attendance tracking",
+    "assignment management",
+    "teaching platform",
+    "educator resources",
+    "digital classroom",
+  ],
+  openGraph: {
+    title: "SmartEdu Hub - For Teachers",
+    description:
+      "Simplify classroom management, create engaging lessons, track student progress, and collaborate effectively with powerful teaching tools.",
+    images: ["/og/teachers.png"],
+  },
+  twitter: {
+    title: "SmartEdu Hub - For Teachers",
+    description:
+      "Simplify classroom management, create engaging lessons, track student progress, and collaborate effectively with powerful teaching tools.",
+    images: ["/og/teachers.png"],
+  },
+};
 
 export default function TeachersHomepage() {
   return (
