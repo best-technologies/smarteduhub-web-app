@@ -59,7 +59,8 @@ export default function CookieConsent() {
           </h3>
           <p className="text-sm text-gray-600 mb-4">
             We use cookies to enhance your browsing experience and analyze our
-            traffic. By clicking "Accept", you consent to our use of cookies.{" "}
+            traffic. By clicking &apos;Accept&apos;, you consent to our use of
+            cookies.{" "}
             <Link
               href="/cookies-policy"
               className="text-brand-primary hover:text-brand-primary-hover underline"
