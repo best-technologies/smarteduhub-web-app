@@ -24,7 +24,7 @@ const delius = Delius({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://smarteduhub.com";
+const siteUrl = "https://smarteduhub.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     siteName: "SmartEdu Hub",
     images: [
       {
-        url: `${siteUrl}/og-image.png`,
+        url: `${siteUrl}/opengraph-image.png`,
         width: 1200,
         height: 630,
         alt: "SmartEdu Hub - Your School Management Solution",
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     description:
       "Transform your school with SmartEdu Hub, the all-in-one platform for managing students, teachers, and administrative tasks. Streamline operations, enhance communication, and improve learning outcomes.",
     creator: "@smarteduhub",
-    images: [`${siteUrl}/og-image.png`],
+    images: [`${siteUrl}/opengraph-image.png`],
   },
   robots: {
     index: true,
