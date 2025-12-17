@@ -64,10 +64,6 @@ const Navigation = () => {
     }, 150);
   };
 
-  const handleDropdownClick = (dropdown: string) => {
-    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
-  };
-
   useEffect(() => {
     return () => {
       if (dropdownTimeoutRef.current) {

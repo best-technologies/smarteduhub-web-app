@@ -151,8 +151,9 @@ export default function CareersPage() {
               Why Join SmartEdu Hub?
             </h2>
             <p className="text-lg text-gray-600">
-              We're not just building software—we're shaping the future of
-              education and making a meaningful impact on millions of lives.
+              We&apos;re not just building software—we&apos;re shaping the
+              future of education and making a meaningful impact on millions of
+              lives.
             </p>
           </div>
 
@@ -256,11 +257,12 @@ export default function CareersPage() {
           <div className="max-w-4xl mx-auto mt-12 text-center bg-gray-50 p-8 rounded-xl">
             <Briefcase className="w-12 h-12 text-brand-primary mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-brand-heading mb-3">
-              Don't See Your Dream Role?
+              Don&apos;t See Your Dream Role?
             </h3>
             <p className="text-gray-600 mb-6">
-              We're always looking for talented people to join our team. Send us
-              your resume and let us know how you'd like to contribute.
+              We&apos;re always looking for talented people to join our team.
+              Send us your resume and let us know how you&apos;d like to
+              contribute.
             </p>
             <button className="bg-brand-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-primary-hover transition-colors">
               Send General Application

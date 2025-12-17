@@ -234,7 +234,7 @@ export default function FAQPage() {
                 <div className="text-center py-12">
                   <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-600 text-lg">
-                    No results found for "{searchQuery}"
+                    No results found for &quot;{searchQuery}&quot;
                   </p>
                   <p className="text-gray-500 mt-2">
                     Try different keywords or browse categories above
@@ -256,8 +256,8 @@ export default function FAQPage() {
                 Still Have Questions?
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Can't find what you're looking for? Our support team is here to
-                help you with any questions.
+                Can&apos;t find what you&apos;re looking for? Our support team
+                is here to help you with any questions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a

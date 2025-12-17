@@ -126,10 +126,10 @@ export default function AboutPage() {
               <p className="text-gray-600 text-lg leading-relaxed">
                 Today, SmartEdu Hub serves thousands of educational institutions
                 worldwide, helping them deliver exceptional learning experiences
-                while simplifying administrative tasks. But we're just getting
-                started—our vision extends far beyond current boundaries, and
-                we're excited to continue innovating for the future of
-                education.
+                while simplifying administrative tasks. But we&apos;re just
+                getting started—our vision extends far beyond current
+                boundaries, and we&apos;re excited to continue innovating for
+                the future of education.
               </p>
             </div>
           </div>
@@ -176,9 +176,9 @@ export default function AboutPage() {
               Join Us on This Journey
             </h2>
             <p className="text-xl text-white/90 mb-8">
-              Be part of the education revolution. Whether you're an educator,
-              student, or institution, SmartEdu Hub has the tools you need to
-              succeed.
+              Be part of the education revolution. Whether you&apos;re an
+              educator, student, or institution, SmartEdu Hub has the tools you
+              need to succeed.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
