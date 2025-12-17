@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { GsapMorphButton } from "@/components/ui/gsapmorph-button";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 const Navigation = () => {
   const router = useRouter();
@@ -14,6 +14,8 @@ const Navigation = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const minorNavLinks = [
     { label: "Schools", href: "/" },
@@ -21,6 +23,59 @@ const Navigation = () => {
     { label: "Parents", href: "/parents" },
     { label: "Students", href: "/students" },
   ];
+
+  const dropdownMenus = {
+    legal: {
+      label: "Legal",
+      items: [
+        { label: "Terms & Conditions", href: "/terms-conditions" },
+        { label: "Privacy Policy", href: "/privacy-policy" },
+        { label: "Cookies Policy", href: "/cookies-policy" },
+      ],
+    },
+    resources: {
+      label: "Resources",
+      items: [
+        { label: "FAQ", href: "/resources/faq" },
+        { label: "Blogs", href: "/resources/blogs" },
+        { label: "News", href: "/resources/news" },
+      ],
+    },
+    product: {
+      label: "Product",
+      items: [
+        { label: "About", href: "/about" },
+        { label: "Events", href: "/events" },
+        { label: "Careers", href: "/careers" },
+      ],
+    },
+  };
+
+  const handleDropdownEnter = (dropdown: string) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setOpenDropdown(dropdown);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 150);
+  };
+
+  const handleDropdownClick = (dropdown: string) => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (dropdownTimeoutRef.current) {
+        clearTimeout(dropdownTimeoutRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -103,7 +158,82 @@ const Navigation = () => {
             </div>
 
             {/* Major Navigation - Main Links (Desktop) */}
-            <div className="hidden lg:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-6">
+              {/* Product Dropdown */}
+              <div
+                className="relative group"
+                onMouseEnter={() => handleDropdownEnter("product")}
+                onMouseLeave={handleDropdownLeave}
+              >
+                <button className="flex items-center gap-1 text-gray-600 hover:text-brand-primary transition-colors py-2">
+                  {dropdownMenus.product.label}
+                  <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                </button>
+                {openDropdown === "product" && (
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    {dropdownMenus.product.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-brand-primary transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Resources Dropdown */}
+              <div
+                className="relative group"
+                onMouseEnter={() => handleDropdownEnter("resources")}
+                onMouseLeave={handleDropdownLeave}
+              >
+                <button className="flex items-center gap-1 text-gray-600 hover:text-brand-primary transition-colors py-2">
+                  {dropdownMenus.resources.label}
+                  <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                </button>
+                {openDropdown === "resources" && (
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    {dropdownMenus.resources.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-brand-primary transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Legal Dropdown */}
+              <div
+                className="relative group"
+                onMouseEnter={() => handleDropdownEnter("legal")}
+                onMouseLeave={handleDropdownLeave}
+              >
+                <button className="flex items-center gap-1 text-gray-600 hover:text-brand-primary transition-colors py-2">
+                  {dropdownMenus.legal.label}
+                  <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                </button>
+                {openDropdown === "legal" && (
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    {dropdownMenus.legal.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-brand-primary transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <Link
                 href="/support"
                 className="text-gray-600 hover:text-brand-primary transition-colors"
@@ -169,11 +299,11 @@ const Navigation = () => {
             </div>
 
             {/* Menu Content */}
-            <div className="flex flex-col p-6 space-y-6">
+            <div className="flex flex-col p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-88px)]">
               {/* Navigation Links */}
               <div className="space-y-2">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Navigation
+                  For
                 </h3>
                 {minorNavLinks.map((link) => (
                   <button
@@ -188,6 +318,73 @@ const Navigation = () => {
                     {link.label}
                   </button>
                 ))}
+              </div>
+
+              {/* Product Section */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Product
+                </h3>
+                {dropdownMenus.product.items.map((item) => (
+                  <button
+                    key={item.href}
+                    onClick={() => handleNavLinkClick(item.href)}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
+                      pathname === item.href
+                        ? "bg-brand-primary text-white font-medium"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Resources Section */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Resources
+                </h3>
+                {dropdownMenus.resources.items.map((item) => (
+                  <button
+                    key={item.href}
+                    onClick={() => handleNavLinkClick(item.href)}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
+                      pathname === item.href
+                        ? "bg-brand-primary text-white font-medium"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Legal Section */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Legal
+                </h3>
+                {dropdownMenus.legal.items.map((item) => (
+                  <button
+                    key={item.href}
+                    onClick={() => handleNavLinkClick(item.href)}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
+                      pathname === item.href
+                        ? "bg-brand-primary text-white font-medium"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Support */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Help
+                </h3>
                 <button
                   onClick={() => handleNavLinkClick("/support")}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
