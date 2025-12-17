@@ -8,7 +8,7 @@ export default function PrivacyPolicyContent() {
         <h1 className="text-4xl font-bold text-brand-heading mb-6">
           Privacy Policy
         </h1>
-        <p className="text-gray-600 mb-4">Last updated: 01 December 2025</p>
+        <p className="text-gray-600 mb-4">Last updated: 17 December 2025</p>
 
         <p className="text-gray-700 leading-relaxed mb-8">
           This Privacy Policy (&quot;Policy&quot;) constitutes a binding

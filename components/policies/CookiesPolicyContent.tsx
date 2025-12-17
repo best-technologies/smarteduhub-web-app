@@ -7,7 +7,20 @@ export default function CookiesPolicyContent() {
         <h1 className="text-4xl font-bold text-brand-heading mb-6">
           Cookies Policy
         </h1>
-        <p className="text-gray-600 mb-8">Last updated: 7 April 2025</p>
+        <p className="text-gray-600 mb-4">Last updated: 17 December 2025</p>
+
+        <p className="text-gray-700 leading-relaxed mb-8">
+          This Cookie Policy (&quot;Policy&quot;) explains how SmartEdu Hub
+          (&quot;SmartEdu Hub&quot;, &quot;we&quot;, &quot;our&quot;,
+          &quot;us&quot;) uses cookies and similar tracking technologies to
+          recognise you when you visit or use our website, platform, or
+          applications (collectively, the &quot;Services&quot;). It sets out
+          what these technologies are, why we use them, and your rights to
+          control their use. This Policy forms part of and is to be read
+          together with our Privacy Policy. By continuing to use the Services,
+          you acknowledge that you have read, understood, and accepted the terms
+          of this Policy.
+        </p>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold text-brand-heading mb-4">
@@ -25,24 +38,28 @@ export default function CookiesPolicyContent() {
             2. How We Use Cookies
           </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            We use cookies for various purposes:
+            We use cookies and similar technologies to support the operation and
+            security of the Services, improve performance, and personalise your
+            experience. Examples include:
           </p>
           <ul className="list-disc pl-6 text-gray-700 space-y-2">
             <li>
-              <strong>Essential Cookies:</strong> Required for the platform to
-              function properly
+              <strong>Strictly Necessary Cookies:</strong> Required for core
+              platform functions such as authentication, session management, and
+              security.
             </li>
             <li>
-              <strong>Performance Cookies:</strong> Help us understand how
-              visitors use our platform
+              <strong>Functional Cookies:</strong> Remember preferences such as
+              language or display settings to improve your experience.
             </li>
             <li>
-              <strong>Functional Cookies:</strong> Remember your preferences and
-              settings
+              <strong>Analytics Cookies:</strong> Collect aggregated data about
+              feature usage and performance so we can improve the Services.
             </li>
             <li>
-              <strong>Analytics Cookies:</strong> Collect information about how
-              you use our platform
+              <strong>Marketing Cookies:</strong> Where applicable, used to
+              support advertising and measure campaign effectiveness — these
+              will only be deployed with your explicit consent.
             </li>
           </ul>
         </section>
@@ -86,21 +103,70 @@ export default function CookiesPolicyContent() {
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold text-brand-heading mb-4">
-            5. Third-Party Cookies
+            4. Third-Party Cookies
           </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            We may use third-party services that set cookies on our platform,
-            including analytics providers and advertising networks.
+            Some cookies may be set by third parties (for example analytics or
+            payment providers). SmartEdu Hub does not control those third-party
+            cookies — please review the privacy and cookie notices of those
+            third parties for details about their practices.
           </p>
         </section>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold text-brand-heading mb-4">
-            6. Contact Us
+            6. Managing Cookies
+          </h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            You can manage cookie preferences via the cookie banner or your
+            browser settings. Blocking or deleting cookies may affect your
+            experience and prevent certain features from functioning.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold text-brand-heading mb-4">
+            7. Data Retention
+          </h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Cookies are retained for no longer than necessary to fulfil the
+            purposes for which they are used. Session cookies expire when the
+            browser is closed; persistent cookies have a defined lifespan.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold text-brand-heading mb-4">
+            8. Legal Basis for Processing
+          </h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            For essential cookies, processing is based on SmartEdu Hub’s
+            legitimate interests in operating a secure and functional platform.
+            For functional, analytics and marketing cookies, we rely on user
+            consent, which may be managed via the cookie banner or preference
+            centre.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold text-brand-heading mb-4">
+            9. Amendments
+          </h2>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            SmartEdu Hub may update this Cookie Policy from time to time. Any
+            material changes will be posted on the Services and, where
+            appropriate, notified to Users. Continued use following such changes
+            constitutes acceptance of the updated Policy.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold text-brand-heading mb-4">
+            10. Contact Information
           </h2>
           <p className="text-gray-700 leading-relaxed">
-            If you have any questions about our use of cookies, please contact
-            us at privacy@smarteduhub.com
+            For questions regarding this Cookie Policy, please contact us at
+            info@smarteduhub.com
           </p>
         </section>
       </div>
