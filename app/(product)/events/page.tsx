@@ -1,7 +1,8 @@
 import React from "react";
+import Image from "next/image";
 import Header from "@/components/home/Header";
 import Footer from "@/components/home/Footer";
-import { Calendar, MapPin, Users, Clock, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Users, Clock, ArrowRight, Play } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,90 +19,71 @@ export const metadata: Metadata = {
 };
 
 export default function EventsPage() {
-  const upcomingEvents = [
+  const eventGalleries = [
     {
-      title: "AI in Education: Transform Your Classroom",
-      date: "January 15, 2026",
-      time: "2:00 PM - 3:30 PM GMT",
-      type: "Webinar",
-      location: "Online",
-      attendees: "500+",
+      title: "Internal Board Presentation",
       description:
-        "Discover how to leverage AI tools to create personalized learning experiences and improve student engagement.",
-      featured: true,
+        "SmartEdu Hub prototype presented to our internal board and company delegates, showcasing the vision and capabilities of our education management platform.",
+      category: "delegates",
+      images: [
+        "/events/delegates-01.jpeg",
+        "/events/delegates-02.jpeg",
+        "/events/delegates-03.jpeg",
+        "/events/delegates-04.jpeg",
+        "/events/delegates-05.jpeg",
+        "/events/delegates-06.jpeg",
+        "/events/delegates-07.jpeg",
+        "/events/delegates-08.jpeg",
+      ],
     },
     {
-      title: "SmartEdu Hub Feature Showcase 2026",
-      date: "January 22, 2026",
-      time: "10:00 AM - 12:00 PM GMT",
-      type: "Product Launch",
-      location: "Online",
-      attendees: "1000+",
+      title: "Nigeria International Book Fair 2025",
       description:
-        "Join us for the unveiling of our latest features and innovations designed to revolutionize education management.",
-      featured: true,
+        "SmartEdu Hub made its public debut at NIBF 2025, held at Balmoral Event Centre, Sheraton Hotel, Ikeja, Lagos. The event brought together publishers, school owners, authors, parents, and students, providing an excellent platform to showcase our innovative education solutions.",
+      category: "nibf",
+      images: [
+        "/events/nibf-01.jpeg",
+        "/events/nibf-02.jpeg",
+        "/events/nibf-03.jpeg",
+        "/events/nibf-04.jpeg",
+        "/events/nibf-05.jpeg",
+        "/events/nibf-06.jpeg",
+      ],
     },
     {
-      title: "Mastering Assessment & Grading",
-      date: "February 5, 2026",
-      time: "3:00 PM - 4:00 PM GMT",
-      type: "Workshop",
-      location: "Online",
-      attendees: "200+",
+      title: "Port Harcourt Educators Showcase",
       description:
-        "Learn efficient strategies for assessment creation, grading, and providing meaningful feedback to students.",
+        "Engaging with the education community in Port Harcourt, we presented SmartEdu Hub to school owners, teachers, and parents, demonstrating how our platform addresses their unique educational needs.",
+      category: "ph",
+      images: [
+        "/events/ph-01.jpeg",
+        "/events/ph-02.jpeg",
+        "/events/ph-03.jpeg",
+        "/events/ph-04.jpeg",
+      ],
     },
     {
-      title: "Building Engaged Learning Communities",
-      date: "February 12, 2026",
-      time: "1:00 PM - 2:30 PM GMT",
-      type: "Webinar",
-      location: "Online",
-      attendees: "300+",
+      title: "Kano Education Summit",
       description:
-        "Explore techniques for fostering collaboration and communication among students, parents, and educators.",
-    },
-    {
-      title: "Data-Driven Decision Making for Schools",
-      date: "February 19, 2026",
-      time: "11:00 AM - 12:30 PM GMT",
-      type: "Training",
-      location: "Online",
-      attendees: "150+",
-      description:
-        "Harness the power of analytics and reporting to make informed decisions that improve student outcomes.",
-    },
-    {
-      title: "Getting Started with SmartEdu Hub",
-      date: "February 26, 2026",
-      time: "2:00 PM - 3:00 PM GMT",
-      type: "Onboarding",
-      location: "Online",
-      attendees: "400+",
-      description:
-        "A comprehensive introduction for new users covering setup, navigation, and essential features.",
+        "SmartEdu Hub was presented to educators in Kano, northern Nigeria. Attendees included school owners, teachers, state government officials, and parents, all eager to explore digital transformation in education.",
+      category: "kano",
+      images: [
+        "/events/kano-01.jpeg",
+        "/events/kano-02.jpeg",
+        "/events/kano-03.jpeg",
+        "/events/kano-04.jpeg",
+      ],
     },
   ];
 
-  const pastEvents = [
-    {
-      title: "Digital Transformation in Education Summit 2025",
-      date: "November 2025",
-      attendees: "2000+",
-      recording: true,
-    },
-    {
-      title: "Teacher Appreciation Week Special",
-      date: "October 2025",
-      attendees: "1500+",
-      recording: true,
-    },
-    {
-      title: "Back to School Tech Tips",
-      date: "September 2025",
-      attendees: "800+",
-      recording: true,
-    },
+  const eventVideos = [
+    // "/events/smeh-video-01.mp4",
+    "/events/smeh-video-02.mp4",
+    "/events/smeh-video-03.mp4",
+    "/events/smeh-video-04.mp4",
+    "/events/smeh-video-05.mp4",
+    "/events/smeh-video-06.mp4",
+    "/events/smeh-video-07.mp4",
   ];
 
   return (
@@ -113,136 +95,102 @@ export default function EventsPage() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Events & Webinars
+              Events Gallery
             </h1>
-            <p className="text-xl md:text-2xl text-white/90">
-              Join our community events, learn from experts, and discover new
-              ways to enhance your educational experience.
+            <p className="text-sm md:text-xl text-white/90">
+              Explore moments from our journey as we showcase SmartEdu Hub
+              across Nigeria, connecting with educators, stakeholders, and the
+              education community.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Upcoming Events */}
+      {/* Event Gallery */}
       <section className="py-20">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-brand-heading mb-12 text-center">
-            Upcoming Events
-          </h2>
+          <div className="max-w-7xl mx-auto space-y-20">
+            {eventGalleries.map((gallery, galleryIndex) => (
+              <div key={galleryIndex} className="space-y-8">
+                <div className="text-center max-w-4xl mx-auto">
+                  <h3 className="text-2xl md:text-3xl font-bold text-brand-heading mb-4">
+                    {gallery.title}
+                  </h3>
+                  <p className="text-sm md:text-lg text-gray-600">
+                    {gallery.description}
+                  </p>
+                </div>
 
-          <div className="max-w-6xl mx-auto space-y-6">
-            {upcomingEvents.map((event, index) => (
-              <div
-                key={index}
-                className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-8 ${
-                  event.featured
-                    ? "border-2 border-brand-primary"
-                    : "border border-gray-200"
-                }`}
-              >
-                {event.featured && (
-                  <div className="inline-block bg-brand-primary text-white text-sm font-semibold px-3 py-1 rounded-full mb-4">
-                    Featured Event
-                  </div>
-                )}
-
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-brand-heading mb-3">
-                      {event.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">{event.description}</p>
-
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-brand-primary" />
-                        <span>{event.date}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-brand-primary" />
-                        <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-brand-primary" />
-                        <span>{event.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-brand-primary" />
-                        <span>{event.attendees} registered</span>
-                      </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {gallery.images.map((image, imageIndex) => (
+                    <div
+                      key={imageIndex}
+                      className="relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow group cursor-pointer"
+                    >
+                      <Image
+                        src={image}
+                        alt={`${gallery.title} - Image ${imageIndex + 1}`}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
                     </div>
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    <span className="inline-block bg-brand-primary/10 text-brand-primary text-sm font-semibold px-4 py-2 rounded-lg text-center">
-                      {event.type}
-                    </span>
-                    <button className="bg-brand-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-primary-hover transition-colors flex items-center justify-center gap-2">
-                      Register Now
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
+                  ))}
                 </div>
               </div>
             ))}
+
+            {/* Video Section */}
+            <div className="space-y-8">
+              <div className="text-center max-w-4xl mx-auto">
+                <h3 className="text-2xl md:text-3xl font-bold text-brand-heading mb-4">
+                  Event Highlights - Video Gallery
+                </h3>
+                <p className="text-sm md:text-lg text-gray-600">
+                  Watch video highlights from our events, capturing the energy,
+                  enthusiasm, and impact of SmartEdu Hub presentations across
+                  various locations.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {eventVideos.map((video, videoIndex) => (
+                  <div
+                    key={videoIndex}
+                    className="aspect-video overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow group"
+                  >
+                    <video
+                      src={video}
+                      className="w-full h-full object-cover"
+                      controls
+                      muted
+                      preload="metadata"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Past Events */}
+      {/* Newsletter CTA */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-brand-heading mb-12 text-center">
-            Past Events
-          </h2>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-6">
-              {pastEvents.map((event, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6"
-                >
-                  <h3 className="text-lg font-semibold text-brand-heading mb-2">
-                    {event.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3">{event.date}</p>
-                  <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-                    <Users className="w-4 h-4 text-brand-primary" />
-                    <span>{event.attendees} attended</span>
-                  </div>
-                  {event.recording && (
-                    <button className="text-brand-primary font-semibold text-sm hover:underline flex items-center gap-2">
-                      Watch Recording
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Signup */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto bg-gradient-to-br from-brand-primary to-brand-primary-hover text-white rounded-2xl p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">Never Miss an Event</h2>
-            <p className="text-xl text-white/90 mb-8">
-              Subscribe to our newsletter and get notified about upcoming
-              events, webinars, and exclusive workshops.
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-brand-heading mb-6">
+              Stay Connected
+            </h2>
+            <p className="text-base md:text-xl text-gray-600 mb-4">
+              Subscribe to our newsletter and be the first to know about
+              upcoming events, product updates, and exclusive educational
+              insights.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-              />
-              <button className="bg-white text-brand-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap">
-                Subscribe
-              </button>
-            </div>
+            <p className="text-sm md:text-lg text-gray-500">
+              Join our growing community of educators and stay informed!
+            </p>
           </div>
         </div>
       </section>
